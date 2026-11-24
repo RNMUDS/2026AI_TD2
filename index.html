@@ -496,10 +496,10 @@ a.sub-item:hover {
       <div class="card-header"><h3>📌 科目の概要</h3></div>
       <ul class="point-list" style="font-size:0.85rem">
         <li>150分 × 7回（4学期・第8〜14回）。2年次必修。Ⅰ（その数字は信じられるか）の続き</li>
-        <li>各自の MacBook Air で PyTorch を動かす。題材は自分で撮った3クラス以上の写真（第8〜14回で同じ写真を使う）</li>
+        <li>各自の MacBook Air で PyTorch を動かす。題材は自分で撮った3クラスの写真（第8〜14回で同じ写真を使う）</li>
         <li>学習済みの大きなモデルを借りて自分の写真の分類器を作り、数値で選び、手元で動くアプリにする</li>
-        <li>毎回：演習 → スライド3枚（問い・結果・判断）→ グループ内で1人3分の発表と2分の質疑</li>
-        <li>「使える」とは：①先に固定した評価用で差 ÷ 標準偏差つきの数字がある ②他人の写真・壊すテストで失敗が分かっている ③Air で推論時間とメモリが要件内 ④自信がないとき「わからない」と返せる</li>
+        <li>毎回：演習 → スライド3枚（問い・結果・判断）→ グループ内で1人3分の発表と2分の質疑 → もらった質問と答え直しをスライド④（質疑応答）にまとめる</li>
+        <li>「使える」とは：①先に決めて変えない評価用で差 ÷ 標準偏差つきの数字がある ②他人の写真・壊すテストで失敗が分かっている ③Air で推論時間とメモリが要件内 ④自信がないとき「わからない」と返せる</li>
       </ul>
     </div>
   </div>
@@ -527,12 +527,17 @@ a.sub-item:hover {
       <div class="card-header"><h3>写真の準備（第8回の前日までに）</h3></div>
       <table style="font-size:0.85rem">
         <tr><th style="width:7rem">項目</th><th>決まり</th></tr>
-        <tr><td>用途</td><td>最初に「誰が・どこで使うか」を1行で決める（例：机の上で、自分のペンと家族のペンを取り違えないように）</td></tr>
-        <tr><td>クラス</td><td>自分が見分けたい3クラス以上。家にある物でよい。第4回の2クラスに1クラス足してもよい</td></tr>
+        <tr><td>3クラス</td><td>自分が見分けたい3クラスを決める。家にある物でよい。物の種類より、置き方・向き・状態の違いのほうが AI にとって難しく面白い。AIテクデザⅠの第4回の2クラスに1クラス足してもよい。例（かっこ内は評価用の撮り方の例）：<ul style="margin:0.3rem 0 0 1.2rem;padding:0">
+            <li>ペンの置き方：縦・横・斜め（評価用：別の部屋の机で、別のペンで）</li>
+            <li>机の上の配置：お気に入りの配置・ふつう・散らかっている（評価用：別の日に並べ直して）</li>
+            <li>マグカップの取っ手の向き：右・左・正面（評価用：夜の照明・別の棚で）</li>
+            <li>靴の脱ぎ方：そろっている・片方が倒れている・ばらばら（評価用：別の日・朝と夜）</li>
+            <li>はさみの状態：閉じている・半分開いている・開いている（評価用：引き出しの中・床の上）</li>
+          </ul></td></tr>
         <tr><td>学習用</td><td>1クラス 40 枚（最低 20 枚）。向き・距離・置き方を変える</td></tr>
-        <tr><td>評価用</td><td>1クラス 20 枚（最低 10 枚）。<strong>別の部屋・別の照明</strong>で撮る。第8回で固定し、第14回まで入れ替えない</td></tr>
+        <tr><td>評価用（テスト用）</td><td>1クラス 20 枚（最低 10 枚）。<strong>別の部屋・別の照明</strong>で撮る。第8回で決めて、第14回まで変えない</td></tr>
         <tr><td>置き場所</td><td><code>assets/c2photos/train/&lt;クラス名&gt;/</code> と <code>assets/c2photos/eval/&lt;クラス名&gt;/</code>（クラス名は半角英数字）</td></tr>
-        <tr><td>撮れないとき</td><td>ネットの画像でもよい。それも無理なら代わりのデータ（犬3種：<code>python setup/download_assets_c2.py</code>）</td></tr>
+        <tr><td>自分で撮る</td><td>スマホで<strong>自分で撮った写真だけ</strong>を使う。ネットの画像や配られたデータは使わない（第14回まで自分の課題として使うため）</td></tr>
       </table>
       <p style="font-size:0.82rem;color:#999;margin-top:0.4rem">人の顔・個人が分かるものは写さない。手順の詳細は<a href="aitd2_week_8.html#sec-photo" style="color:#4FC3F7">第8回のページ</a>。</p>
     </div>
@@ -545,7 +550,7 @@ a.sub-item:hover {
       <div class="card-header"><h3>⚠ LLM の使い方（Ⅰで減点が多かった点）</h3></div>
       <ul class="point-list" style="font-size:0.85rem">
         <li>LLM の利用は自由。ただし<strong>丸写しでは学習にならない</strong>。必ず内容を理解し、自分の言葉で書く</li>
-        <li>LLM の出力をそのまま貼った項目は、<strong>その項目の点を半分にする</strong>（Ⅰと同じ）</li>
+        <li>LLM の出力を書き換えずに貼った項目は、<strong>該当する項目の点を半分にする</strong>（Ⅰと同じ）</li>
         <li>考察とスライドには、<strong>自分の表の数値</strong>を入れる。自分の結果に無い数値や一般論だけの説明は根拠にならない</li>
         <li>発表と質疑では、スライドに書いたことを<strong>自分の言葉で説明できるか</strong>を見る。説明できない内容は書かない</li>
       </ul>
@@ -559,7 +564,7 @@ a.sub-item:hover {
       <div class="card-header"><h3>1 到達目標</h3></div>
       <table style="font-size:0.85rem">
         <tr><th style="width:11rem">目標</th><th>できること</th></tr>
-        <tr><td>① 評価を先に決める</td><td>評価用を先に固定し、リーク（同じ物・背景が両側にある）を点検できる</td></tr>
+        <tr><td>① 評価を先に決める</td><td>評価用を先に決め、リーク（同じ物・背景が両側にある）を点検できる</td></tr>
         <tr><td>② 借りて比べる</td><td>ゼロショット・凍結＋線形・LoRA・微調整を比べ、差 ÷ 標準偏差 で選べる</td></tr>
         <tr><td>③ 中を確かめる</td><td>注意マップと隠すテストで、モデルが何を見ているか確かめられる</td></tr>
         <tr><td>④ 使える形にする</td><td>速度・メモリ・判定保留の閾値を数値で決め、アプリにできる</td></tr>
@@ -575,15 +580,15 @@ a.sub-item:hover {
       <div class="card-header"><h3>2 授業計画（全7回）</h3></div>
       <table style="font-size:0.85rem">
         <tr><th style="width:4rem">段階</th><th style="width:3rem">回</th><th style="width:10rem">テーマ</th><th>やること</th><th style="width:5rem">資料</th></tr>
-        <tr><td>決める</td><td>8</td><td>評価用を先に決める（11/24・オンライン）</td><td>撮影・リークの点検・評価用の固定／ゼロショット（SigLIP2）で基準値</td><td><a href="aitd2_week_8.html" style="color:#4FC3F7">授業ページ</a></td></tr>
-        <tr><td rowspan="4">選ぶ</td><td>9</td><td>特徴を借りる</td><td>ResNet18・ViT・DINOv2 を凍結して線形分類／kNN・t-SNE・5-Fold</td><td><span style="color:#666">準備中</span></td></tr>
+        <tr><td>決める</td><td>8</td><td>ゼロショット（11/24・オンライン）</td><td>自分の写真で学習せず、文だけで分類する（SigLIP2）。ゼロショットの正解率が基準値／評価用を決める（似ている上位8組を目で見て点検）</td><td><a href="aitd2_week_8.html" style="color:#4FC3F7">授業ページ</a></td></tr>
+        <tr><td rowspan="4">選ぶ</td><td>9</td><td>転移学習（Transformer）</td><td>学習済みのモデル（前回：ResNet18＝CNN／今回：ViT・DINOv2＝Transformer）を凍結し、最後の層だけを自分の写真で学習する</td><td><span style="color:#666">準備中</span></td></tr>
         <tr><td>10</td><td>注意機構</td><td>attention を自分で書いて確かめる・注意マップ／背景をぼかすテスト</td><td><span style="color:#666">準備中</span></td></tr>
         <tr><td>11</td><td>LoRA</td><td>凍結・LoRA・最後の2層の微調整を比べる／rank 4 と 16。中間発表</td><td><span style="color:#666">準備中</span></td></tr>
-        <tr><td>12</td><td>実験管理</td><td>MLflow に記録／Optuna で探し、新しいシードで回し直して楽観の差を測る</td><td><span style="color:#666">準備中</span></td></tr>
+        <tr><td>12</td><td>ハイパーパラメータの比較</td><td>教科書第11章の MLflow で、最適化手法・バッチサイズ・学習率から比べる設定を自分で決めて回し、画面で比べる（Optuna はオプション課題）</td><td><span style="color:#666">準備中</span></td></tr>
         <tr><td rowspan="2">届ける</td><td>13</td><td>小さく速く・判定保留</td><td>モデル × 解像度の精度・速度・メモリ／閾値を決めて Gradio のアプリ</td><td><span style="color:#666">準備中</span></td></tr>
         <tr><td>14</td><td>他人テスト・発表</td><td>他の人の写真・照明・回転で精度の落ち方／書きためたスライドで最終発表</td><td><span style="color:#666">準備中</span></td></tr>
       </table>
-      <p style="font-size:0.82rem;color:#999;margin-top:0.5rem">毎回スライド3枚（問い・結果・判断）を作ってグループ内で発表する。書きためたスライドを第14回の最終発表に使う。</p>
+      <p style="font-size:0.82rem;color:#999;margin-top:0.5rem">毎回スライド3枚（問い・結果・判断）を作ってグループ内で発表し、質疑応答を4枚目にまとめる。書きためたスライドを第14回の最終発表に使う。</p>
     </div>
   </div>
 </section>
@@ -593,9 +598,9 @@ a.sub-item:hover {
     <div class="card standard">
       <div class="card-header"><h3>3 進め方とルール</h3></div>
       <ul class="point-list" style="font-size:0.85rem">
-        <li><strong>毎回の中心はグループ内プレゼン</strong>：演習 → スライド3枚 → 1人3分の発表と2分の質疑 → 聞き手は相手の数値を問う質問1つと評価（○△×）</li>
-        <li>提出と評価は <a href="https://musashino-u.myopenlms.net/course/view.php?id=7915" target="_blank" rel="noopener" style="color:#4FC3F7">Open-LMS のⅡのコース</a>（Ⅰとは別）。成績は課題提出 100%。スライドと発表（聞き手の評価・質問への答えを含む）が中心。ノートブックと CSV はスライドの数値の裏付けとして照らし合わせる</li>
-        <li>評価用の写真は第8回で固定し、第14回まで入れ替えない</li>
+        <li><strong>毎回の中心はグループ内プレゼン</strong>：演習 → スライド3枚 → 1人3分の発表と2分の質疑 → 聞き手は相手の数値を問う質問を1つ → 発表者はもらった質問をスライド④にまとめ、1つを自分の数値で答え直す</li>
+        <li>提出と評価は <a href="https://musashino-u.myopenlms.net/course/view.php?id=7915" target="_blank" rel="noopener" style="color:#4FC3F7">Open-LMS のⅡのコース</a>（Ⅰとは別）。成績は課題提出 100%。スライド（発表内容と質疑応答）が中心。ノートブックはスライドの数値の裏付けとして照らし合わせる</li>
+        <li>評価用の写真は第8回で決めて、第14回まで変えない</li>
         <li>差 ÷ 標準偏差 の標準偏差に、写真の選び方のぶれ（ブートストラップ）を入れる。第9回からは写真とシードを同時に選び直して1つにまとめる</li>
         <li>LLM の利用は自由。ただし自分で読み、測って確かめる（<a href="#sec-llm" style="color:#4FC3F7">LLM の使い方</a>）</li>
       </ul>

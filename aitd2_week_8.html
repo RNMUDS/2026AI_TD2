@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>第8回：評価用の写真を先に決める ― 自分の課題と基準値 | AI_TD2</title>
+<title>第8回：ゼロショット ― 自分の写真で学習せず、文だけで分類する | AI_TD2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -477,9 +477,9 @@ a.sub-item:hover {
   <a href="#sec-flow">本日の流れ</a>
   <a href="#sec-prep">0. 準備</a>
   <a href="#sec-photo">撮影</a>
-  <a href="#sec-ex1" class="nav-assignment">演習1 評価用を固定</a>
+  <a href="#sec-ex1" class="nav-assignment">演習1 評価用を決める</a>
   <a href="#sec-ex2" class="nav-assignment">演習2 ゼロショット</a>
-  <a href="#sec-slides" class="nav-assignment">スライド3枚</a>
+  <a href="#sec-slides" class="nav-assignment">スライド</a>
   <a href="#sec-present" class="nav-assignment">グループ内プレゼン</a>
   <a href="#sec-submit" class="nav-exam">提出</a>
 </nav>
@@ -489,8 +489,8 @@ a.sub-item:hover {
   <div class="container">
     <div class="hero-badge">人工知能(AI)テクノロジデザインⅡ（AI_TD2）─ 2026年度 4学期</div>
     <p style="font-size:0.85rem;opacity:0.7;margin-bottom:0.3rem">武蔵野大学データサイエンス学部　中村 亮太</p>
-    <h1>第8回：評価用の写真を先に決める ― 自分の課題と基準値</h1>
-    <p>オンライン（ライブ）・各自の自宅で。事前に撮った3クラスの写真で評価用を固定し、学習しないモデル（ゼロショット）で基準値を出す。結果をスライド3枚にまとめ、バーチャル空間でグループ内プレゼンをする。</p>
+    <h1>第8回：ゼロショット ― 自分の写真で学習せず、文だけで分類する</h1>
+    <p>① 事前に撮った3クラスの写真を<strong>学習用</strong>（モデルに見せる写真）と<strong>評価用（テスト用）</strong>（正解率を測るためだけの写真）に分け、評価用に問題がないか確かめる。評価用は第14回まで変えない。② 自分の写真を一度も学習させていないモデルで分類し、何%当たるかを測る。測った正解率が、第9回から作るモデルが超えるべき<strong>基準値</strong>になる。③ 結果をスライド3枚にまとめ、バーチャル空間でグループ内プレゼンをする。もらった質問と答えを4枚目（質疑応答）にまとめる。</p>
   </div>
 </header>
 
@@ -501,19 +501,58 @@ a.sub-item:hover {
       <div class="card-header"><h3>📌 今日やること</h3></div>
       <table style="font-size:0.85rem">
         <tr><th style="width:7rem">パート</th><th>やること</th><th style="width:34%">分かること</th></tr>
-        <tr><td><strong>撮影（事前）</strong></td><td>3クラス × 学習用 40 枚・評価用 20 枚。評価用は別の部屋・別の照明で撮る。授業中は撮り直しだけ</td><td>使う場面に近い評価用を作る</td></tr>
-        <tr><td><strong>演習1</strong></td><td>学習用と評価用の似ている組を探し（TODO 1）、点検表で確かめて評価用を固定する</td><td>評価用が学習用と「別物」か</td></tr>
-        <tr><td><strong>演習2</strong></td><td>ラベル文を3通り書き（TODO 1）、SigLIP2 で学習せずに分類する（TODO 2）。差をブートストラップで判定する</td><td>学習しなくてもどこまで当たるか（基準値）</td></tr>
-        <tr><td><strong>プレゼン</strong></td><td>スライド3枚（問い・結果・判断）を作り、グループ内で3分ずつ発表する。聞き手は質問1つと評価</td><td>自分の数値で判断を説明できるか</td></tr>
+        <tr><td><strong>撮影</strong></td><td>3クラス × 学習用 40 枚・評価用 20 枚。評価用は別の部屋・別の照明で撮る。授業中は撮り直しだけ</td><td>使う場面に近い評価用を作る</td></tr>
+        <tr><td><strong>演習1</strong></td><td>DINOv2 で、学習用と評価用のすべての組の似ている度合いを計算する（自分でコードを1行書く）。評価用の写真ごとに一番似ている学習用を選び、似ている順に8組を目で見て点検表を書く。問題があれば撮り直す。最後に評価用の写真の一覧を記録する（第14回まで変えない）</td><td>評価用が学習用と「別物」か</td></tr>
+        <tr><td><strong>演習2</strong></td><td>ラベル文を3通り書き、SigLIP2 で学習せずに分類する（当たり・外れを出すコードを1行書く）。差をブートストラップで判定する</td><td>学習しなくてもどこまで当たるか（基準値）</td></tr>
+        <tr><td><strong>プレゼン</strong></td><td>スライド3枚（問い・結果・判断）を作り、グループ内で3分ずつ発表する。聞き手は相手の数値を問う質問を1つ。発表後、もらった質問と答え直しをスライド④（質疑応答）にまとめる</td><td>自分の数値で判断を説明できるか</td></tr>
       </table>
+<svg viewBox="0 0 980 172" style="width:100%;height:auto;display:block;margin:0.6rem 0" role="img" aria-label="第8回の流れ" font-family="Noto Sans JP, Hiragino Sans, sans-serif">
+<defs><marker id="ah_flow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#888"/></marker></defs>
+<rect x="10" y="20" width="122" height="110" rx="10" fill="#161616" stroke="#FFB800" stroke-width="2"/>
+<text x="71.0" y="52" text-anchor="middle" fill="#FFB800" font-size="16" font-weight="700">撮影</text>
+<text x="71.0" y="82" text-anchor="middle" fill="#bbb" font-size="12">3クラス</text>
+<text x="71.0" y="100" text-anchor="middle" fill="#bbb" font-size="12">学習 40・評価 20</text>
+<line x1="134" y1="75" x2="146" y2="75" stroke="#888" stroke-width="2" marker-end="url(#ah_flow)"/>
+<rect x="148" y="20" width="122" height="110" rx="10" fill="#161616" stroke="#FFB800" stroke-width="2"/>
+<text x="209.0" y="52" text-anchor="middle" fill="#FFB800" font-size="16" font-weight="700">演習1</text>
+<text x="209.0" y="82" text-anchor="middle" fill="#bbb" font-size="12">似すぎた組を探して</text>
+<text x="209.0" y="100" text-anchor="middle" fill="#bbb" font-size="12">評価用を決める</text>
+<line x1="272" y1="75" x2="284" y2="75" stroke="#888" stroke-width="2" marker-end="url(#ah_flow)"/>
+<rect x="286" y="20" width="122" height="110" rx="10" fill="#161616" stroke="#4FC3F7" stroke-width="2"/>
+<text x="347.0" y="52" text-anchor="middle" fill="#4FC3F7" font-size="16" font-weight="700">演習2</text>
+<text x="347.0" y="82" text-anchor="middle" fill="#bbb" font-size="12">文だけで分類</text>
+<text x="347.0" y="100" text-anchor="middle" fill="#bbb" font-size="12">（学習しない）</text>
+<line x1="410" y1="75" x2="422" y2="75" stroke="#888" stroke-width="2" marker-end="url(#ah_flow)"/>
+<rect x="424" y="20" width="122" height="110" rx="10" fill="#161616" stroke="#4FC3F7" stroke-width="2"/>
+<text x="485.0" y="52" text-anchor="middle" fill="#4FC3F7" font-size="16" font-weight="700">基準値</text>
+<text x="485.0" y="82" text-anchor="middle" fill="#bbb" font-size="12">評価用の正解率</text>
+<text x="485.0" y="100" text-anchor="middle" fill="#bbb" font-size="12">例 70.0%</text>
+<line x1="548" y1="75" x2="560" y2="75" stroke="#888" stroke-width="2" marker-end="url(#ah_flow)"/>
+<rect x="562" y="20" width="122" height="110" rx="10" fill="#161616" stroke="#B388FF" stroke-width="2"/>
+<text x="623.0" y="52" text-anchor="middle" fill="#B388FF" font-size="16" font-weight="700">スライド3枚</text>
+<text x="623.0" y="82" text-anchor="middle" fill="#bbb" font-size="12">問い・結果・判断</text>
+<line x1="686" y1="75" x2="698" y2="75" stroke="#888" stroke-width="2" marker-end="url(#ah_flow)"/>
+<rect x="700" y="20" width="122" height="110" rx="10" fill="#161616" stroke="#B388FF" stroke-width="2"/>
+<text x="761.0" y="52" text-anchor="middle" fill="#B388FF" font-size="16" font-weight="700">発表</text>
+<text x="761.0" y="82" text-anchor="middle" fill="#bbb" font-size="12">グループ内</text>
+<text x="761.0" y="100" text-anchor="middle" fill="#bbb" font-size="12">3分＋質疑2分</text>
+<line x1="824" y1="75" x2="836" y2="75" stroke="#888" stroke-width="2" marker-end="url(#ah_flow)"/>
+<rect x="838" y="20" width="122" height="110" rx="10" fill="#161616" stroke="#B388FF" stroke-width="2"/>
+<text x="899.0" y="52" text-anchor="middle" fill="#B388FF" font-size="16" font-weight="700">スライド④</text>
+<text x="899.0" y="82" text-anchor="middle" fill="#bbb" font-size="12">質疑応答</text>
+<text x="899.0" y="100" text-anchor="middle" fill="#bbb" font-size="12">答え直し</text>
+<text x="480" y="158" text-anchor="middle" fill="#bbb" font-size="12.5">今日の写真と評価用は第14回まで使う。今日の正解率が、第9回から作るモデルが超えるべき「基準値」</text>
+</svg>
+
       <table style="font-size:0.82rem;margin-top:0.8rem">
         <tr><th style="width:9rem">用語</th><th>意味</th></tr>
-        <tr><td>評価用</td><td>成績をつけるためだけに使う写真。今日固定し、第14回まで入れ替えない</td></tr>
+        <tr><td>学習用</td><td>モデルに見せて、クラスの違いを覚えさせる写真</td></tr>
+        <tr><td>評価用（テスト用）</td><td>モデルには見せずに、モデルの正解率を測るためだけに使う写真。今日決めたら第14回まで同じ写真を使い、毎回のモデルを同じ評価用で測って比べる</td></tr>
         <tr><td>リーク</td><td>評価用とほぼ同じ写真（同じ物・同じ背景・連写）が学習用にもあること。正解率が実力より高く出る</td></tr>
         <tr><td>ゼロショット</td><td>自分の写真で学習せず、クラスの説明文（ラベル文）だけで分類すること</td></tr>
         <tr><td>ブートストラップ</td><td>評価用の写真を「戻しながら選び直す」ことを繰り返し、正解率のぶれを見る方法</td></tr>
       </table>
-      <p style="font-size:0.82rem;color:#999;margin-top:0.5rem">Ⅱのテーマ：<strong>自分の課題に合わせて，使える形にする</strong>。今日の写真を第14回まで使う。毎回のスライド3枚を書きため、第14回の最終発表に使う。</p>
+      <p style="font-size:0.82rem;color:#999;margin-top:0.5rem">Ⅱのテーマ：<strong>自分の課題に合わせて，使える形にする</strong>。今日の写真を第14回まで使う。毎回のスライド（3枚＋質疑応答1枚）を書きため、第14回の最終発表に使う。</p>
     </div>
   </div>
 </section>
@@ -524,13 +563,12 @@ a.sub-item:hover {
     <div class="submission-box">
       <h3>📤 提出ガイド（<strong>全員が個人で提出</strong>・zip にしない）</h3>
       <div class="submission-items">
-        <a href="#sec-slides" class="sub-item" style="text-decoration:none;color:inherit"><span class="sub-count">1</span><span class="tag tag-standard">スライド</span>c2_d8_slides.pdf</a>
-        <a href="#sec-present" class="sub-item" style="text-decoration:none;color:inherit"><span class="sub-count">2</span><span class="tag tag-standard">聞き手</span>peer.ipynb ／ c2_d8_peer.csv</a>
-        <a href="#sec-ex1" class="sub-item" style="text-decoration:none;color:inherit"><span class="sub-count">3</span><span class="tag tag-standard">演習1</span>ex1.ipynb ／ c2_d8_ex1.csv ／ c2_split.csv</a>
-        <a href="#sec-ex2" class="sub-item" style="text-decoration:none;color:inherit"><span class="sub-count">2</span><span class="tag tag-standard">演習2</span>ex2.ipynb ／ c2_d8_ex2.csv</a>
+        <a href="#sec-slides" class="sub-item" style="text-decoration:none;color:inherit"><span class="sub-count">1</span><span class="tag tag-standard">スライド</span>c2_d8_slides.pdf（発表①〜③＋質疑応答④）</a>
+        <a href="#sec-ex1" class="sub-item" style="text-decoration:none;color:inherit"><span class="sub-count">2</span><span class="tag tag-standard">演習1</span>ex1.ipynb</a>
+        <a href="#sec-ex2" class="sub-item" style="text-decoration:none;color:inherit"><span class="sub-count">3</span><span class="tag tag-standard">演習2</span>ex2.ipynb</a>
       </div>
       <div style="background:#0a1a2e;border:1px solid #2a6a9a;border-radius:8px;padding:0.8rem 1rem;margin-top:1rem;font-size:0.85rem;color:#81D4FA">
-        <strong>手順:</strong> ノートブックを保存する → Open-LMS の「第8回 課題提出」へ<strong>自分で</strong>アップロード。CSV は <code>results/</code> 直下の自分のもの。写真は別に出さない（ノートブックの図に写るのは可）。
+        <strong>手順:</strong> ノートブックを保存する → Open-LMS の「第8回 課題提出」へ<strong>自分で</strong>アップロード（3 ファイル）。CSV は出さない（ノートブックの出力で照らし合わせる）。写真は別に出さない（ノートブックの図に写るのは可）。
       </div>
     </div>
   </div>
@@ -543,14 +581,14 @@ a.sub-item:hover {
       <div class="card-header"><h3>本日の流れ（150分・オンライン）</h3></div>
       <table style="font-size:0.82rem">
         <tr><th style="width:6rem">時間</th><th>内容</th></tr>
-        <tr><td>事前</td><td><a href="#sec-photo" style="color:#4FC3F7"><strong>撮影</strong></a>（3クラス × 学習用 40・評価用 20）と<a href="#sec-prep" style="color:#4FC3F7">重みのダウンロード</a>（約 1.9GB）</td></tr>
+        <tr><td>事前</td><td><a href="#sec-photo" style="color:#4FC3F7"><strong>撮影</strong></a>（3クラス × 学習用 40・評価用 20）と<a href="#sec-prep" style="color:#4FC3F7">学習済みモデルの重みのダウンロード</a>（SigLIP2 約 1.4GB・DINOv2 約 88MB など、計 約 1.9GB）</td></tr>
         <tr><td>0–10</td><td><a href="#sec-prep" style="color:#4FC3F7">準備</a>：資料の取り込み・ライブラリの追加</td></tr>
         <tr><td>10–20</td><td>撮り直し・足りない写真を足す</td></tr>
-        <tr><td>20–55</td><td><a href="#sec-ex1" style="color:#4FC3F7"><strong>演習1</strong></a> 似ている組を探す → 点検表 → 評価用を固定</td></tr>
+        <tr><td>20–55</td><td><a href="#sec-ex1" style="color:#4FC3F7"><strong>演習1</strong></a> 似ている度合いを計算 → 上位8組を目で見る → 点検表 → 評価用を記録</td></tr>
         <tr><td>55–90</td><td><a href="#sec-ex2" style="color:#4FC3F7"><strong>演習2</strong></a> ラベル文3通りを学習用で比べて選ぶ → 評価用で1回 → 考察</td></tr>
         <tr><td>90–110</td><td><a href="#sec-slides" style="color:#4FC3F7"><strong>スライド3枚</strong></a>を作る</td></tr>
-        <tr><td>110–140</td><td><a href="#sec-present" style="color:#4FC3F7"><strong>グループ内プレゼン</strong></a>（バーチャル空間・1人 3分＋質疑 2分）→ 聞き手シート</td></tr>
-        <tr><td>140–150</td><td>もらった質問に答える → 提出</td></tr>
+        <tr><td>110–140</td><td><a href="#sec-present" style="color:#4FC3F7"><strong>グループ内プレゼン</strong></a>（バーチャル空間・1人 3分＋質疑 2分）</td></tr>
+        <tr><td>140–150</td><td><a href="#sec-slides" style="color:#4FC3F7"><strong>スライド④ 質疑応答</strong></a>を作る → 提出</td></tr>
       </table>
       <p style="font-size:0.82rem;color:#999;margin-top:0.4rem">質問はバーチャル空間で教員の席へ（画面共有で見せる）。10分・55分・90分・110分に全体で確認する。</p>
     </div>
@@ -570,7 +608,7 @@ a.sub-item:hover {
 <span class="fn">git</span> checkout origin/main -- course2/day8 common setup requirements.txt .gitignore
 <span class="fn">source</span> .venv/bin/activate
 <span class="fn">uv</span> pip install -r requirements.txt        <span class="cmt"># Ⅱで使うライブラリ（約 500MB）</span>
-<span class="fn">python</span> setup/download_weights.py          <span class="cmt"># 計 約 1.9GB（第5回の分を含む）．授業の前日までに</span></pre>
+<span class="fn">python</span> setup/download_weights.py          <span class="cmt"># SigLIP2（演習2）・DINOv2（演習1）ほか 計 約 1.9GB</span></pre>
       <p style="font-size:0.82rem;color:#999;margin-top:0.3rem">ダウンロードは自宅の回線で。途中で止まったら、もう一度同じコマンドを実行する（続きから落とす）。</p>
     </div>
   </div>
@@ -581,23 +619,85 @@ a.sub-item:hover {
   <div class="container">
     <div class="section-header">
       <div class="section-num" style="background:#FFB800">撮</div>
-      <h2>撮影 ― 自分の課題を決めて3クラスを撮る（事前課題・授業の前日まで）</h2>
+      <h2>撮影 ― 自分の課題を決めて3クラスを撮る</h2>
     </div>
     <div class="card standard">
+<svg viewBox="0 0 980 218" style="width:100%;height:auto;display:block;margin:0.6rem 0" role="img" aria-label="3クラスの例" font-family="Noto Sans JP, Hiragino Sans, sans-serif">
+<defs><marker id="ah_examples" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#888"/></marker></defs>
+<rect x="10" y="10" width="310" height="172" rx="10" fill="#161616" stroke="#FFB800" stroke-width="2"/>
+<text x="165" y="36" text-anchor="middle" fill="#FFB800" font-size="14" font-weight="700">ペンの置き方</text>
+<rect x="22" y="50" width="92" height="92" rx="4" fill="#3a3428" stroke="#444"/><g transform="translate(68.0,96.0) rotate(-90)"><rect x="-22.0" y="-3.5" width="36" height="7" rx="2" fill="#4FC3F7"/><path d="M14.0,-3.5 L22.0,0 L14.0,3.5 z" fill="#ddd"/><rect x="-22.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<text x="68.0" y="166" text-anchor="middle" fill="#eee" font-size="12.5">縦</text>
+<rect x="120" y="50" width="92" height="92" rx="4" fill="#3a3428" stroke="#444"/><g transform="translate(166.0,96.0) rotate(0)"><rect x="-22.0" y="-3.5" width="36" height="7" rx="2" fill="#4FC3F7"/><path d="M14.0,-3.5 L22.0,0 L14.0,3.5 z" fill="#ddd"/><rect x="-22.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<text x="166.0" y="166" text-anchor="middle" fill="#eee" font-size="12.5">横</text>
+<rect x="218" y="50" width="92" height="92" rx="4" fill="#3a3428" stroke="#444"/><g transform="translate(264.0,96.0) rotate(-45)"><rect x="-22.0" y="-3.5" width="36" height="7" rx="2" fill="#4FC3F7"/><path d="M14.0,-3.5 L22.0,0 L14.0,3.5 z" fill="#ddd"/><rect x="-22.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<text x="264.0" y="166" text-anchor="middle" fill="#eee" font-size="12.5">斜め</text>
+<rect x="335" y="10" width="310" height="172" rx="10" fill="#161616" stroke="#FFB800" stroke-width="2"/>
+<text x="490" y="36" text-anchor="middle" fill="#FFB800" font-size="14" font-weight="700">マグカップの取っ手</text>
+<rect x="347" y="50" width="92" height="92" rx="4" fill="#3a3428" stroke="#444"/><rect x="379.0" y="80.0" width="28" height="32" rx="4" fill="#eee"/><path d="M407.0,87.0 q13,0 13,9 q0,9 -13,9" fill="none" stroke="#eee" stroke-width="5"/>
+<text x="393.0" y="166" text-anchor="middle" fill="#eee" font-size="12.5">右</text>
+<rect x="445" y="50" width="92" height="92" rx="4" fill="#3a3428" stroke="#444"/><rect x="477.0" y="80.0" width="28" height="32" rx="4" fill="#eee"/><path d="M477.0,87.0 q-13,0 -13,9 q0,9 13,9" fill="none" stroke="#eee" stroke-width="5"/>
+<text x="491.0" y="166" text-anchor="middle" fill="#eee" font-size="12.5">左</text>
+<rect x="543" y="50" width="92" height="92" rx="4" fill="#3a3428" stroke="#444"/><rect x="575.0" y="80.0" width="28" height="32" rx="4" fill="#eee"/><ellipse cx="589.0" cy="96.0" rx="5" ry="8" fill="none" stroke="#999" stroke-width="3"/>
+<text x="589.0" y="166" text-anchor="middle" fill="#eee" font-size="12.5">正面</text>
+<rect x="660" y="10" width="310" height="172" rx="10" fill="#161616" stroke="#FFB800" stroke-width="2"/>
+<text x="815" y="36" text-anchor="middle" fill="#FFB800" font-size="14" font-weight="700">はさみの状態</text>
+<rect x="672" y="50" width="92" height="92" rx="4" fill="#3a3428" stroke="#444"/><line x1="718.0" y1="108.0" x2="719.8" y2="74.0" stroke="#ccc" stroke-width="4" stroke-linecap="round"/><circle cx="717.4" cy="126.0" r="7" fill="none" stroke="#FF6B6B" stroke-width="3"/><line x1="718.0" y1="108.0" x2="716.2" y2="74.0" stroke="#ccc" stroke-width="4" stroke-linecap="round"/><circle cx="718.6" cy="126.0" r="7" fill="none" stroke="#FF6B6B" stroke-width="3"/><circle cx="718.0" cy="108.0" r="2.5" fill="#888"/>
+<text x="718.0" y="166" text-anchor="middle" fill="#eee" font-size="12.5">閉じている</text>
+<rect x="770" y="50" width="92" height="92" rx="4" fill="#3a3428" stroke="#444"/><line x1="816.0" y1="108.0" x2="826.2" y2="75.6" stroke="#ccc" stroke-width="4" stroke-linecap="round"/><circle cx="812.4" cy="125.4" r="7" fill="none" stroke="#FF6B6B" stroke-width="3"/><line x1="816.0" y1="108.0" x2="805.8" y2="75.6" stroke="#ccc" stroke-width="4" stroke-linecap="round"/><circle cx="819.6" cy="125.4" r="7" fill="none" stroke="#FF6B6B" stroke-width="3"/><circle cx="816.0" cy="108.0" r="2.5" fill="#888"/>
+<text x="816.0" y="166" text-anchor="middle" fill="#eee" font-size="12.5">半分開いている</text>
+<rect x="868" y="50" width="92" height="92" rx="4" fill="#3a3428" stroke="#444"/><line x1="914.0" y1="108.0" x2="934.7" y2="81.0" stroke="#ccc" stroke-width="4" stroke-linecap="round"/><circle cx="906.7" cy="123.5" r="7" fill="none" stroke="#FF6B6B" stroke-width="3"/><line x1="914.0" y1="108.0" x2="893.3" y2="81.0" stroke="#ccc" stroke-width="4" stroke-linecap="round"/><circle cx="921.3" cy="123.5" r="7" fill="none" stroke="#FF6B6B" stroke-width="3"/><circle cx="914.0" cy="108.0" r="2.5" fill="#888"/>
+<text x="914.0" y="166" text-anchor="middle" fill="#eee" font-size="12.5">開いている</text>
+<text x="490" y="206" text-anchor="middle" fill="#bbb" font-size="12.5">物の種類（ペン・鉛筆…）より、置き方・向き・状態の違いのほうが AI には難しい。3クラスは自分で決める</text>
+</svg>
+
       <table style="font-size:0.85rem">
         <tr><th style="width:8rem">項目</th><th>決まり</th></tr>
-        <tr><td>① 用途</td><td>最初に「誰が・どこで使うか」を1行で決める（例：自分が机の上で、家族のペンと取り違えないように）。評価用はその場面で撮る</td></tr>
-        <tr><td>② 課題</td><td>自分が見分けたい3クラス以上（例：自分のペン・家族のペン・鉛筆）。第4回の2クラスに1クラス足してもよい</td></tr>
-        <tr><td>③ 学習用</td><td>1クラス 40 枚（最低 20 枚）。向き・距離・置き方を変える</td></tr>
-        <tr><td>④ 評価用</td><td>1クラス 20 枚（最低 10 枚）。<strong>別の部屋・別の照明</strong>で撮る。別の個体（別の1本のペン）があればそれを使う。無ければ同じ物でよいが、背景と照明は必ず変える</td></tr>
-        <tr><td>⑤ 置き場所</td><td><code>assets/c2photos/train/&lt;クラス名&gt;/</code> と <code>assets/c2photos/eval/&lt;クラス名&gt;/</code>。クラス名は半角英数字で両方そろえる</td></tr>
-        <tr><td>撮れないとき</td><td>ネットの画像を集めてもよい。何も無い人は <code>python setup/download_assets_c2.py</code>（犬3種の代わりのデータ）</td></tr>
+        <tr><td>① 3クラス</td><td>自分が見分けたい3クラスを決める。物の種類より、置き方・向き・状態の違いのほうが、AI にとって難しく面白い。AIテクデザⅠの第4回の2クラスに1クラス足してもよい。例（かっこ内は評価用の撮り方の例）：<ul style="margin:0.3rem 0 0 1.2rem;padding:0">
+            <li>ペンの置き方：縦・横・斜め（評価用：別の部屋の机で、別のペンで）</li>
+            <li>机の上の配置：お気に入りの配置・ふつう・散らかっている（評価用：別の日に並べ直して）</li>
+            <li>マグカップの取っ手の向き：右・左・正面（評価用：夜の照明・別の棚で）</li>
+            <li>靴の脱ぎ方：そろっている・片方が倒れている・ばらばら（評価用：別の日・朝と夜）</li>
+            <li>はさみの状態：閉じている・半分開いている・開いている（評価用：引き出しの中・床の上）</li>
+          </ul></td></tr>
+        <tr><td>② 学習用</td><td>1クラス 40 枚（最低 20 枚）。向き・距離・置き方を変える</td></tr>
+        <tr><td>③ 評価用（テスト用）</td><td>1クラス 20 枚（最低 10 枚）。<strong>別の部屋・別の照明</strong>で撮る。別の個体（別の1本のペン）があれば、評価用には別の個体を使う。無ければ同じ物でよいが、背景と照明は必ず変える</td></tr>
+        <tr><td>④ 置き場所</td><td><code>assets/c2photos/train/&lt;クラス名&gt;/</code> と <code>assets/c2photos/eval/&lt;クラス名&gt;/</code>。クラス名は半角英数字で両方そろえる</td></tr>
+        <tr><td>自分で撮る</td><td>スマホで<strong>自分で撮った写真だけ</strong>を使う。ネットの画像や配られたデータは使わない</td></tr>
       </table>
-<pre><span class="fn">mkdir</span> -p assets/c2photos/{train,eval}/{mypen,familypen,pencil}   <span class="cmt"># クラス名は自分のものに変える</span></pre>
+<pre><span class="fn">mkdir</span> -p assets/c2photos/{train,eval}/{vertical,horizontal,diagonal}   <span class="cmt"># クラス名は自分のものに変える</span></pre>
+<svg viewBox="0 0 900 284" style="width:100%;height:auto;display:block;margin:0.6rem 0" role="img" aria-label="写真の置き場所" font-family="Noto Sans JP, Hiragino Sans, sans-serif">
+<defs><marker id="ah_folder" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#888"/></marker></defs>
+<rect x="10" y="10" width="640" height="264" rx="10" fill="#0d0d0d" stroke="#888" stroke-width="2"/>
+<text x="30" y="40" text-anchor="start" fill="#eee" font-size="13" font-family="JetBrains Mono, monospace">📁 assets/c2photos/</text>
+<path d="M40,48 v13 h12" fill="none" stroke="#555"/>
+<text x="60" y="66" text-anchor="start" fill="#FFB800" font-size="13">📁 train/　← 学習用（部屋A・昼）</text>
+<path d="M70,74 v13 h12" fill="none" stroke="#555"/>
+<text x="90" y="92" text-anchor="start" fill="#bbb" font-size="13">📁 vertical/　　IMG_0001.HEIC …（40 枚）</text>
+<path d="M70,100 v13 h12" fill="none" stroke="#555"/>
+<text x="90" y="118" text-anchor="start" fill="#bbb" font-size="13">📁 horizontal/　IMG_0041.HEIC …</text>
+<path d="M70,126 v13 h12" fill="none" stroke="#555"/>
+<text x="90" y="144" text-anchor="start" fill="#bbb" font-size="13">📁 diagonal/　　IMG_0081.HEIC …</text>
+<path d="M40,152 v13 h12" fill="none" stroke="#555"/>
+<text x="60" y="170" text-anchor="start" fill="#4FC3F7" font-size="13">📁 eval/　← 評価用（部屋B・夜）</text>
+<path d="M70,178 v13 h12" fill="none" stroke="#555"/>
+<text x="90" y="196" text-anchor="start" fill="#bbb" font-size="13">📁 vertical/　　（20 枚）</text>
+<path d="M70,204 v13 h12" fill="none" stroke="#555"/>
+<text x="90" y="222" text-anchor="start" fill="#bbb" font-size="13">📁 horizontal/</text>
+<path d="M70,230 v13 h12" fill="none" stroke="#555"/>
+<text x="90" y="248" text-anchor="start" fill="#bbb" font-size="13">📁 diagonal/</text>
+<text x="670" y="70" text-anchor="start" fill="#bbb" font-size="12.5">・クラス名は半角英数字</text>
+<text x="670" y="96" text-anchor="start" fill="#bbb" font-size="12.5">・train と eval で同じ名前</text>
+<text x="670" y="122" text-anchor="start" fill="#bbb" font-size="12.5">・HEIC のままでよい</text>
+<text x="670" y="148" text-anchor="start" fill="#bbb" font-size="12.5">・演習1 の (1) が長い辺 256</text>
+<text x="670" y="174" text-anchor="start" fill="#bbb" font-size="12.5">　画素の JPEG にそろえる</text>
+</svg>
+
       <ul class="point-list" style="font-size:0.82rem;margin-top:0.4rem">
         <li>iPhone：AirDrop で送ると Mac の「ダウンロード」に入る → Finder で上のフォルダへ移す（HEIC のままでよい）</li>
         <li>Android：Google ドライブ（または Google フォト）に上げて Mac で落とす</li>
-        <li>人の顔・個人が分かるものは写さない。名前で区別できないクラス（自分のペン・家族のペン）は、演習2 のゼロショットが当たらなくてよい</li>
+        <li>向き・置き方でクラスを分けるときは、スマホの構え方（真上から・縦持ちなど）を全部の写真でそろえる。スマホを傾けると、写真の中の向きが変わってしまう</li>
+        <li>人の顔・個人が分かるものは写さない。置き方・向き・状態のように文で言い表しにくいクラスは、演習2 のゼロショットが当たらなくてよい</li>
       </ul>
     </div>
   </div>
@@ -611,24 +711,284 @@ a.sub-item:hover {
       <h2>演習1 評価用の写真を先に決める ― <code>ex1.ipynb</code>（35分）</h2>
     </div>
     <div class="card standard">
-      <div class="card-header"><h3>なぜ先に決めるか</h3></div>
+      <div class="card-header"><h3>何のための評価か</h3></div>
       <ul class="point-list" style="font-size:0.85rem">
-        <li>評価用を見ながらモデルを選び直すと、評価用でだけ良い数字が出る → 先に決めて、第14回まで入れ替えない</li>
-        <li>評価用とほぼ同じ写真が学習用にあると、答えを見たのと同じ（リーク）</li>
-        <li>同じ部屋・同じ照明だけで測ると、使う場面での実力より高く出やすい</li>
+        <li>Ⅱでは、自分の3クラスを見分けるモデルを、次のように何通りも作る</li>
       </ul>
+      <table style="font-size:0.85rem;margin:0.4rem 0 0.6rem">
+        <tr><th style="width:3rem">回</th><th style="width:11rem">作り方</th><th>具体的には</th></tr>
+        <tr><td>8</td><td>学習しない</td><td>写真と文が合っているかを判定できるモデル（SigLIP2）に、自分の写真とクラスごとの文（例「a photo of a pen」）を渡し、一番合う文のクラスを答えにする。自分の写真をモデルに覚えさせることはしない（<a href="#sec-ex2" style="color:#4FC3F7">演習2</a>）</td></tr>
+        <tr><td>9</td><td>転移学習（Transformer）</td><td>学習済みのモデル（前回：ResNet18＝CNN／今回：ViT・DINOv2＝Transformer）を凍結し、最後の層だけを自分の写真で学習する。ViT は写真を小さな区画に分けて扱う。DINOv2 は答えなしで写真だけから学習したモデル</td></tr>
+        <tr><td>10</td><td>見ている所を確かめる</td><td>モデルが写真のどこを見て答えているか（物か、背景か）を図にする</td></tr>
+        <tr><td>11</td><td>少しだけ調整する</td><td>学習済みのモデルに小さな部品（LoRA）を足し、足した部品だけを自分の写真で学習する。最後の2層だけ学習する方法とも比べる</td></tr>
+        <tr><td>12</td><td>ハイパーパラメータを比べる</td><td>教科書第11章の MLflow で、最適化手法・バッチサイズ・学習率から比べる設定を自分で決めて for 文で回し、記録を画面で比べる（Optuna はオプション課題）</td></tr>
+        <tr><td>13</td><td>小さく速くする</td><td>写真の大きさを下げる・軽いモデルに替えて、MacBook Air で速く・少ないメモリで動かす。自信がないときは「わからない」と答えさせ、アプリにする</td></tr>
+        <tr><td>14</td><td>他の人の写真で試す</td><td>他の人が撮った写真や、明るさ・向きを変えた写真で、どこまで当たるかを確かめる</td></tr>
+      </table>
+<svg viewBox="0 0 980 240" style="width:100%;height:auto;display:block;margin:0.6rem 0" role="img" aria-label="第8回から第14回の流れ" font-family="Noto Sans JP, Hiragino Sans, sans-serif">
+<defs><marker id="ah_roadmap" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#888"/></marker></defs>
+<line x1="40" y1="60" x2="896" y2="60" stroke="#444" stroke-width="3"/>
+<circle cx="74" cy="60" r="22" fill="#161616" stroke="#4FC3F7" stroke-width="3"/>
+<text x="74" y="67" text-anchor="middle" fill="#4FC3F7" font-size="18" font-weight="700">8</text>
+<text x="74" y="110" text-anchor="middle" fill="#eee" font-size="13" font-weight="700">学習しない</text>
+<text x="74" y="130" text-anchor="middle" fill="#bbb" font-size="12">ゼロショット</text>
+<line x1="74" y1="140" x2="74" y2="178" stroke="#4FC3F7" stroke-width="1.5" marker-end="url(#ah_roadmap)" stroke-dasharray="4 3"/>
+<circle cx="210" cy="60" r="22" fill="#161616" stroke="#FFB800" stroke-width="3"/>
+<text x="210" y="67" text-anchor="middle" fill="#FFB800" font-size="18" font-weight="700">9</text>
+<text x="210" y="110" text-anchor="middle" fill="#eee" font-size="13" font-weight="700">転移学習</text>
+<text x="210" y="130" text-anchor="middle" fill="#bbb" font-size="12">ViT・DINOv2</text>
+<line x1="210" y1="140" x2="210" y2="178" stroke="#4FC3F7" stroke-width="1.5" marker-end="url(#ah_roadmap)" stroke-dasharray="4 3"/>
+<circle cx="346" cy="60" r="22" fill="#161616" stroke="#FFB800" stroke-width="3"/>
+<text x="346" y="67" text-anchor="middle" fill="#FFB800" font-size="18" font-weight="700">10</text>
+<text x="346" y="110" text-anchor="middle" fill="#eee" font-size="13" font-weight="700">見ている所</text>
+<text x="346" y="130" text-anchor="middle" fill="#bbb" font-size="12">注意マップ</text>
+<line x1="346" y1="140" x2="346" y2="178" stroke="#4FC3F7" stroke-width="1.5" marker-end="url(#ah_roadmap)" stroke-dasharray="4 3"/>
+<circle cx="482" cy="60" r="22" fill="#161616" stroke="#FFB800" stroke-width="3"/>
+<text x="482" y="67" text-anchor="middle" fill="#FFB800" font-size="18" font-weight="700">11</text>
+<text x="482" y="110" text-anchor="middle" fill="#eee" font-size="13" font-weight="700">少しだけ調整</text>
+<text x="482" y="130" text-anchor="middle" fill="#bbb" font-size="12">LoRA</text>
+<line x1="482" y1="140" x2="482" y2="178" stroke="#4FC3F7" stroke-width="1.5" marker-end="url(#ah_roadmap)" stroke-dasharray="4 3"/>
+<circle cx="618" cy="60" r="22" fill="#161616" stroke="#FFB800" stroke-width="3"/>
+<text x="618" y="67" text-anchor="middle" fill="#FFB800" font-size="18" font-weight="700">12</text>
+<text x="618" y="110" text-anchor="middle" fill="#eee" font-size="13" font-weight="700">設定を比べる</text>
+<text x="618" y="130" text-anchor="middle" fill="#bbb" font-size="12">MLflow</text>
+<line x1="618" y1="140" x2="618" y2="178" stroke="#4FC3F7" stroke-width="1.5" marker-end="url(#ah_roadmap)" stroke-dasharray="4 3"/>
+<circle cx="754" cy="60" r="22" fill="#161616" stroke="#B388FF" stroke-width="3"/>
+<text x="754" y="67" text-anchor="middle" fill="#B388FF" font-size="18" font-weight="700">13</text>
+<text x="754" y="110" text-anchor="middle" fill="#eee" font-size="13" font-weight="700">小さく速く</text>
+<text x="754" y="130" text-anchor="middle" fill="#bbb" font-size="12">アプリ</text>
+<line x1="754" y1="140" x2="754" y2="178" stroke="#4FC3F7" stroke-width="1.5" marker-end="url(#ah_roadmap)" stroke-dasharray="4 3"/>
+<circle cx="890" cy="60" r="22" fill="#161616" stroke="#B388FF" stroke-width="3"/>
+<text x="890" y="67" text-anchor="middle" fill="#B388FF" font-size="18" font-weight="700">14</text>
+<text x="890" y="110" text-anchor="middle" fill="#eee" font-size="13" font-weight="700">他の人の写真</text>
+<text x="890" y="130" text-anchor="middle" fill="#bbb" font-size="12">最終発表</text>
+<line x1="890" y1="140" x2="890" y2="178" stroke="#4FC3F7" stroke-width="1.5" marker-end="url(#ah_roadmap)" stroke-dasharray="4 3"/>
+<rect x="30" y="182" width="920" height="44" rx="10" fill="#0a1a2e" stroke="#4FC3F7" stroke-width="2"/>
+<text x="490" y="210" text-anchor="middle" fill="#81D4FA" font-size="14" font-weight="700">毎回、同じ評価用（今日決めた写真）で正解率を測る → 数字を並べて比べられる</text>
+</svg>
+
+      <ul class="point-list" style="font-size:0.85rem">
+        <li>毎回「<strong>まだ見せていない写真を、何%当てられるか</strong>（正解率）」を測り、どのモデルを使うかを決める</li>
+        <li>正解率を測るための写真が<strong>評価用</strong>。毎回同じ評価用で測るので、回をまたいで数字を比べられる</li>
+      </ul>
+      <table style="font-size:0.85rem;margin-top:0.6rem">
+        <tr><th style="width:6rem">写真</th><th>何に使うか</th><th style="width:9rem">枚数（1クラス）</th><th>撮り方</th></tr>
+        <tr><td><strong>学習用</strong></td><td>モデルに見せて、クラスの違いを覚えさせる。モデルの選び方も学習用で決める</td><td>40 枚</td><td>向き・距離・置き方を変える</td></tr>
+        <tr><td><strong>評価用（テスト用）</strong></td><td>モデルには<strong>見せない</strong>。正解率を測るためだけに使う</td><td>20 枚</td><td>別の部屋・別の照明（実際に使う場面）</td></tr>
+      </table>
+<svg viewBox="0 0 980 480" style="width:100%;height:auto;display:block;margin:0.6rem 0" role="img" aria-label="学習用と評価用の違い" font-family="Noto Sans JP, Hiragino Sans, sans-serif">
+<defs><marker id="ah_split" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#888"/></marker></defs>
+<rect x="10" y="10" width="420" height="250" rx="10" fill="#161616" stroke="#FFB800" stroke-width="2"/>
+<text x="220" y="40" text-anchor="middle" fill="#FFB800" font-size="15" font-weight="700">学習用（部屋A・昼）1クラス 40 枚</text>
+<rect x="30" y="58" width="54" height="54" rx="4" fill="#3a3428" stroke="#444"/><g transform="translate(57,85) rotate(-78)"><rect x="-19.0" y="-3.5" width="30" height="7" rx="2" fill="#4FC3F7"/><path d="M11.0,-3.5 L19.0,0 L11.0,3.5 z" fill="#ddd"/><rect x="-19.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<rect x="92" y="58" width="54" height="54" rx="4" fill="#3a3428" stroke="#444"/><g transform="translate(119,85) rotate(-84)"><rect x="-20.0" y="-3.5" width="32" height="7" rx="2" fill="#4FC3F7"/><path d="M12.0,-3.5 L20.0,0 L12.0,3.5 z" fill="#ddd"/><rect x="-20.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<rect x="154" y="58" width="54" height="54" rx="4" fill="#3a3428" stroke="#444"/><g transform="translate(181,85) rotate(-90)"><rect x="-21.0" y="-3.5" width="34" height="7" rx="2" fill="#4FC3F7"/><path d="M13.0,-3.5 L21.0,0 L13.0,3.5 z" fill="#ddd"/><rect x="-21.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<rect x="216" y="58" width="54" height="54" rx="4" fill="#3a3428" stroke="#444"/><g transform="translate(243,85) rotate(-96)"><rect x="-22.0" y="-3.5" width="36" height="7" rx="2" fill="#4FC3F7"/><path d="M14.0,-3.5 L22.0,0 L14.0,3.5 z" fill="#ddd"/><rect x="-22.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<rect x="278" y="58" width="54" height="54" rx="4" fill="#3a3428" stroke="#444"/><g transform="translate(305,85) rotate(-102)"><rect x="-23.0" y="-3.5" width="38" height="7" rx="2" fill="#4FC3F7"/><path d="M15.0,-3.5 L23.0,0 L15.0,3.5 z" fill="#ddd"/><rect x="-23.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<text x="355" y="92" text-anchor="start" fill="#bbb" font-size="13">縦</text>
+<rect x="30" y="120" width="54" height="54" rx="4" fill="#3a3428" stroke="#444"/><g transform="translate(57,147) rotate(12)"><rect x="-19.0" y="-3.5" width="30" height="7" rx="2" fill="#4FC3F7"/><path d="M11.0,-3.5 L19.0,0 L11.0,3.5 z" fill="#ddd"/><rect x="-19.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<rect x="92" y="120" width="54" height="54" rx="4" fill="#3a3428" stroke="#444"/><g transform="translate(119,147) rotate(6)"><rect x="-20.0" y="-3.5" width="32" height="7" rx="2" fill="#4FC3F7"/><path d="M12.0,-3.5 L20.0,0 L12.0,3.5 z" fill="#ddd"/><rect x="-20.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<rect x="154" y="120" width="54" height="54" rx="4" fill="#3a3428" stroke="#444"/><g transform="translate(181,147) rotate(0)"><rect x="-21.0" y="-3.5" width="34" height="7" rx="2" fill="#4FC3F7"/><path d="M13.0,-3.5 L21.0,0 L13.0,3.5 z" fill="#ddd"/><rect x="-21.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<rect x="216" y="120" width="54" height="54" rx="4" fill="#3a3428" stroke="#444"/><g transform="translate(243,147) rotate(-6)"><rect x="-22.0" y="-3.5" width="36" height="7" rx="2" fill="#4FC3F7"/><path d="M14.0,-3.5 L22.0,0 L14.0,3.5 z" fill="#ddd"/><rect x="-22.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<rect x="278" y="120" width="54" height="54" rx="4" fill="#3a3428" stroke="#444"/><g transform="translate(305,147) rotate(-12)"><rect x="-23.0" y="-3.5" width="38" height="7" rx="2" fill="#4FC3F7"/><path d="M15.0,-3.5 L23.0,0 L15.0,3.5 z" fill="#ddd"/><rect x="-23.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<text x="355" y="154" text-anchor="start" fill="#bbb" font-size="13">横</text>
+<rect x="30" y="182" width="54" height="54" rx="4" fill="#3a3428" stroke="#444"/><g transform="translate(57,209) rotate(-33)"><rect x="-19.0" y="-3.5" width="30" height="7" rx="2" fill="#4FC3F7"/><path d="M11.0,-3.5 L19.0,0 L11.0,3.5 z" fill="#ddd"/><rect x="-19.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<rect x="92" y="182" width="54" height="54" rx="4" fill="#3a3428" stroke="#444"/><g transform="translate(119,209) rotate(-39)"><rect x="-20.0" y="-3.5" width="32" height="7" rx="2" fill="#4FC3F7"/><path d="M12.0,-3.5 L20.0,0 L12.0,3.5 z" fill="#ddd"/><rect x="-20.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<rect x="154" y="182" width="54" height="54" rx="4" fill="#3a3428" stroke="#444"/><g transform="translate(181,209) rotate(-45)"><rect x="-21.0" y="-3.5" width="34" height="7" rx="2" fill="#4FC3F7"/><path d="M13.0,-3.5 L21.0,0 L13.0,3.5 z" fill="#ddd"/><rect x="-21.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<rect x="216" y="182" width="54" height="54" rx="4" fill="#3a3428" stroke="#444"/><g transform="translate(243,209) rotate(-51)"><rect x="-22.0" y="-3.5" width="36" height="7" rx="2" fill="#4FC3F7"/><path d="M14.0,-3.5 L22.0,0 L14.0,3.5 z" fill="#ddd"/><rect x="-22.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<rect x="278" y="182" width="54" height="54" rx="4" fill="#3a3428" stroke="#444"/><g transform="translate(305,209) rotate(-57)"><rect x="-23.0" y="-3.5" width="38" height="7" rx="2" fill="#4FC3F7"/><path d="M15.0,-3.5 L23.0,0 L15.0,3.5 z" fill="#ddd"/><rect x="-23.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<text x="355" y="216" text-anchor="start" fill="#bbb" font-size="13">斜め</text>
+<text x="220" y="250" text-anchor="middle" fill="#bbb" font-size="12">向き・距離・置き方を変えて撮る</text>
+<rect x="550" y="10" width="420" height="250" rx="10" fill="#161616" stroke="#4FC3F7" stroke-width="2"/>
+<text x="760" y="40" text-anchor="middle" fill="#4FC3F7" font-size="15" font-weight="700">評価用（テスト用）（部屋B・夜）1クラス 20 枚</text>
+<rect x="590" y="58" width="54" height="54" rx="4" fill="#1c2633" stroke="#444"/><g transform="translate(617,85) rotate(-85)"><rect x="-20.0" y="-3.5" width="32" height="7" rx="2" fill="#FFAB91"/><path d="M12.0,-3.5 L20.0,0 L12.0,3.5 z" fill="#ddd"/><rect x="-20.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<rect x="652" y="58" width="54" height="54" rx="4" fill="#1c2633" stroke="#444"/><g transform="translate(679,85) rotate(-90)"><rect x="-20.0" y="-3.5" width="32" height="7" rx="2" fill="#FFAB91"/><path d="M12.0,-3.5 L20.0,0 L12.0,3.5 z" fill="#ddd"/><rect x="-20.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<rect x="714" y="58" width="54" height="54" rx="4" fill="#1c2633" stroke="#444"/><g transform="translate(741,85) rotate(-95)"><rect x="-20.0" y="-3.5" width="32" height="7" rx="2" fill="#FFAB91"/><path d="M12.0,-3.5 L20.0,0 L12.0,3.5 z" fill="#ddd"/><rect x="-20.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<text x="795" y="92" text-anchor="start" fill="#bbb" font-size="13">縦</text>
+<rect x="590" y="120" width="54" height="54" rx="4" fill="#1c2633" stroke="#444"/><g transform="translate(617,147) rotate(5)"><rect x="-20.0" y="-3.5" width="32" height="7" rx="2" fill="#FFAB91"/><path d="M12.0,-3.5 L20.0,0 L12.0,3.5 z" fill="#ddd"/><rect x="-20.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<rect x="652" y="120" width="54" height="54" rx="4" fill="#1c2633" stroke="#444"/><g transform="translate(679,147) rotate(0)"><rect x="-20.0" y="-3.5" width="32" height="7" rx="2" fill="#FFAB91"/><path d="M12.0,-3.5 L20.0,0 L12.0,3.5 z" fill="#ddd"/><rect x="-20.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<rect x="714" y="120" width="54" height="54" rx="4" fill="#1c2633" stroke="#444"/><g transform="translate(741,147) rotate(-5)"><rect x="-20.0" y="-3.5" width="32" height="7" rx="2" fill="#FFAB91"/><path d="M12.0,-3.5 L20.0,0 L12.0,3.5 z" fill="#ddd"/><rect x="-20.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<text x="795" y="154" text-anchor="start" fill="#bbb" font-size="13">横</text>
+<rect x="590" y="182" width="54" height="54" rx="4" fill="#1c2633" stroke="#444"/><g transform="translate(617,209) rotate(-40)"><rect x="-20.0" y="-3.5" width="32" height="7" rx="2" fill="#FFAB91"/><path d="M12.0,-3.5 L20.0,0 L12.0,3.5 z" fill="#ddd"/><rect x="-20.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<rect x="652" y="182" width="54" height="54" rx="4" fill="#1c2633" stroke="#444"/><g transform="translate(679,209) rotate(-45)"><rect x="-20.0" y="-3.5" width="32" height="7" rx="2" fill="#FFAB91"/><path d="M12.0,-3.5 L20.0,0 L12.0,3.5 z" fill="#ddd"/><rect x="-20.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<rect x="714" y="182" width="54" height="54" rx="4" fill="#1c2633" stroke="#444"/><g transform="translate(741,209) rotate(-50)"><rect x="-20.0" y="-3.5" width="32" height="7" rx="2" fill="#FFAB91"/><path d="M12.0,-3.5 L20.0,0 L12.0,3.5 z" fill="#ddd"/><rect x="-20.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<text x="795" y="216" text-anchor="start" fill="#bbb" font-size="13">斜め</text>
+<text x="760" y="250" text-anchor="middle" fill="#bbb" font-size="12">別の部屋・別の照明・別のペンで撮る</text>
+<rect x="410" y="290" width="160" height="60" rx="10" fill="#161616" stroke="#888" stroke-width="2"/>
+<text x="490" y="316" text-anchor="middle" fill="#eee" font-size="15" font-weight="700">モデル</text>
+<text x="490" y="338" text-anchor="middle" fill="#bbb" font-size="11">（第9回から学習する）</text>
+<line x1="220" y1="262" x2="405" y2="312" stroke="#FFB800" stroke-width="2" marker-end="url(#ah_split)"/>
+<text x="230" y="326" text-anchor="start" fill="#FFB800" font-size="13">見せて覚えさせる</text>
+<line x1="760" y1="262" x2="575" y2="312" stroke="#4FC3F7" stroke-width="2" marker-end="url(#ah_split)" stroke-dasharray="6 4"/>
+<text x="760" y="326" text-anchor="end" fill="#4FC3F7" font-size="13">見せない（答え合わせだけ）</text>
+<line x1="490" y1="352" x2="490" y2="388" stroke="#888" stroke-width="2" marker-end="url(#ah_split)"/>
+<rect x="370" y="390" width="240" height="50" rx="10" fill="#0a1a2e" stroke="#4FC3F7" stroke-width="2"/>
+<text x="490" y="421" text-anchor="middle" fill="#81D4FA" font-size="13" font-weight="700">評価用で答え合わせ → 正解率</text>
+<text x="490" y="466" text-anchor="middle" fill="#bbb" font-size="12.5">🔒 評価用は今日決めて第14回まで同じ写真。毎回のモデルを同じ評価用で測るので、回をまたいで比べられる</text>
+</svg>
+
+    </div>
+    <div class="card standard">
+      <div class="card-header"><h3>評価用を先に決めて、第14回まで変えない理由</h3></div>
+      <p style="font-size:0.85rem;margin-bottom:0.3rem"><strong>理由1　先に決める：評価用を見ながら選ぶと、正解率が実力より高く出る</strong></p>
+      <ul class="point-list" style="font-size:0.85rem">
+        <li>評価用 30 枚（1クラス 10 枚）では、写真を入れ替えるだけで正解率が 10 ポイントほど動く（教員の検証）。どの写真が入るかの運で、正解率が上下する</li>
+        <li>例：設定を 10 通り試し、評価用の正解率が一番高かった設定を選ぶ。選んだ設定には「実力」と「評価用の写真とのたまたまの相性」の両方が入っている。新しい写真で測り直すと、正解率は下がる</li>
+        <li>対策：<strong>選ぶのは学習用で行い、評価用は選んだ後に1回だけ測る</strong>。演習2 でも、ラベル文3通りは学習用で比べ、評価用は選んだ1つで1回だけ測る</li>
+      </ul>
+      <p style="font-size:0.85rem;margin:0.8rem 0 0.3rem"><strong>理由2　第14回まで変えない：毎回同じ評価用で測らないと、回どうしを比べられない</strong></p>
+      <ul class="point-list" style="font-size:0.85rem">
+        <li>例：第8回は 60.0%、第9回は 85.0% だったとする。第9回で評価用を撮り直していたら、上がった理由が「モデルが良くなった」のか「評価用が簡単になった」のか分からない</li>
+        <li>評価用が同じなら、正解率の違いはモデルの違いだけから来る。第8回の基準値と、第9〜14回の各モデルを同じ物差しで比べられる</li>
+        <li>評価用の一覧と指紋は <code>results/c2_split.csv</code> に記録する。第9回からは、評価用の写真が1枚でも変わっているとノートブックが止まる</li>
+      </ul>
+      <p style="font-size:0.85rem;margin:0.8rem 0 0.3rem"><strong>理由3　評価用に入れてはいけない写真がある：今日しか撮り直せないので、今日点検する</strong></p>
+      <table style="font-size:0.85rem">
+        <tr><th style="width:13rem">入れてはいけない写真</th><th>なぜ困るか</th><th style="width:15rem">演習1での対策</th></tr>
+        <tr><td>学習用とほぼ同じ写真（連写・同じ物・同じ背景）＝<strong>リーク</strong></td><td>モデルが学習で見た写真とほぼ同じ写真で測ることになる。答えを見てからテストを受けるのと同じで、正解率が実力より高く出る</td><td>似ている度合いを計算し、評価用ごとに一番似ている組を上位8組まで目で見て、点検表を書く</td></tr>
+        <tr><td>学習用と同じ部屋・同じ照明で撮った写真</td><td>実際に使う場面（別の日・別の場所・別の明るさ）より簡単な写真で測ることになり、正解率が実力より高く出る</td><td>評価用は別の部屋・別の照明で撮る。別の個体（別の1本のペン）があれば使う</td></tr>
+      </table>
+<svg viewBox="0 0 980 276" style="width:100%;height:auto;display:block;margin:0.6rem 0" role="img" aria-label="リークとは" font-family="Noto Sans JP, Hiragino Sans, sans-serif">
+<defs><marker id="ah_leak" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#888"/></marker></defs>
+<rect x="10" y="10" width="470" height="230" rx="10" fill="#161616" stroke="#FF6B6B" stroke-width="2"/>
+<text x="245" y="38" text-anchor="middle" fill="#FF6B6B" font-size="15" font-weight="700">リークあり（だめな例）</text>
+<rect x="50" y="56" width="110" height="110" rx="4" fill="#3a3428" stroke="#444"/><g transform="translate(105,111) rotate(-90)"><rect x="-35.0" y="-3.5" width="62" height="7" rx="2" fill="#4FC3F7"/><path d="M27.0,-3.5 L35.0,0 L27.0,3.5 z" fill="#ddd"/><rect x="-35.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<text x="105" y="186" text-anchor="middle" fill="#FFB800" font-size="13">学習用</text>
+<rect x="310" y="56" width="110" height="110" rx="4" fill="#3a3428" stroke="#444"/><g transform="translate(365,111) rotate(-92)"><rect x="-35.0" y="-3.5" width="62" height="7" rx="2" fill="#4FC3F7"/><path d="M27.0,-3.5 L35.0,0 L27.0,3.5 z" fill="#ddd"/><rect x="-35.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<text x="365" y="186" text-anchor="middle" fill="#4FC3F7" font-size="13">評価用</text>
+<line x1="170" y1="111" x2="300" y2="111" stroke="#FF6B6B" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="235" y="100" text-anchor="middle" fill="#bbb" font-size="12">類似度</text>
+<text x="235" y="132" text-anchor="middle" fill="#FF6B6B" font-size="20" font-weight="700">0.95</text>
+<text x="245" y="208" text-anchor="middle" fill="#bbb" font-size="12">評価用が学習用の連写とほぼ同じ</text>
+<text x="245" y="226" text-anchor="middle" fill="#bbb" font-size="12">→ 覚えた写真で測るので、実力より高く出る</text>
+<rect x="500" y="10" width="470" height="230" rx="10" fill="#161616" stroke="#81C784" stroke-width="2"/>
+<text x="735" y="38" text-anchor="middle" fill="#81C784" font-size="15" font-weight="700">リークなし（よい例）</text>
+<rect x="540" y="56" width="110" height="110" rx="4" fill="#3a3428" stroke="#444"/><g transform="translate(595,111) rotate(-90)"><rect x="-35.0" y="-3.5" width="62" height="7" rx="2" fill="#4FC3F7"/><path d="M27.0,-3.5 L35.0,0 L27.0,3.5 z" fill="#ddd"/><rect x="-35.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<text x="595" y="186" text-anchor="middle" fill="#FFB800" font-size="13">学習用</text>
+<rect x="800" y="56" width="110" height="110" rx="4" fill="#1c2633" stroke="#444"/><g transform="translate(855,111) rotate(-84)"><rect x="-32.0" y="-3.5" width="56" height="7" rx="2" fill="#FFAB91"/><path d="M24.0,-3.5 L32.0,0 L24.0,3.5 z" fill="#ddd"/><rect x="-32.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<text x="855" y="186" text-anchor="middle" fill="#4FC3F7" font-size="13">評価用</text>
+<line x1="660" y1="111" x2="790" y2="111" stroke="#81C784" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="725" y="100" text-anchor="middle" fill="#bbb" font-size="12">類似度</text>
+<text x="725" y="132" text-anchor="middle" fill="#81C784" font-size="20" font-weight="700">0.55</text>
+<text x="735" y="208" text-anchor="middle" fill="#bbb" font-size="12">評価用は別の部屋・照明・別のペン</text>
+<text x="735" y="226" text-anchor="middle" fill="#bbb" font-size="12">→ 使う場面での実力を測れる</text>
+<text x="490" y="262" text-anchor="middle" fill="#bbb" font-size="12">類似度（−1〜1）：DINOv2 で写真を数値の並び（特徴ベクトル）にし、向きがどれだけそろっているかを測る。数値は例</text>
+</svg>
+
+      <p style="font-size:0.82rem;color:#999;margin-top:0.4rem">理由3 の教員の検証（ペン：適当に置く・芯が出ている・机と平行に置く）：学習用は木の机で<strong>木目</strong>と平行に、評価用は灰色の机で<strong>机の端</strong>と平行に置いた。評価用の机には木目がないので、DINOv2 に最後の層だけを学習しても「平行」のクラスは評価用 40 枚中 11 枚しか当たらなかった（全体 58.8%）。評価用を別の机で撮ったから、学習用と評価用の手がかりのずれが見つかった。</p>
+      <p style="font-size:0.82rem;color:#999;margin-top:0.4rem">演習1のゴール：自分の評価用が学習用と「別物」になっていることを確かめて、第14回まで使う評価用を決める。撮り直せるのは今日だけ。</p>
     </div>
     <div class="card standard">
       <div class="card-header"><h3>手順</h3></div>
       <table style="font-size:0.85rem">
         <tr><th style="width:3rem">節</th><th>やること</th></tr>
         <tr><td>(1)</td><td>写真をそろえる（長い辺 256 画素の JPEG に。元の写真は書き換えない）</td></tr>
-        <tr><td>(2)</td><td><strong>TODO 1</strong>：学習済みモデル DINOv2 で写真を特徴ベクトルにし、学習用と評価用のすべての組のコサイン類似度を1行で求める</td></tr>
-        <tr><td>(3)</td><td>似ている順に 8 組を目で見る。同じクラスどうし → リークの疑い。別のクラスどうし → 見分けにくい組</td></tr>
+        <tr><td>(2)</td><td><strong>自分でコードを1行書く</strong>：学習済みモデル DINOv2 で写真を特徴ベクトルにし、学習用と評価用のすべての組のコサイン類似度を1行で求める</td></tr>
+        <tr><td>(3)</td><td>評価用の写真ごとに一番似ている学習用の写真を選び、似ている順に 8 組を目で見る。同じクラスどうし → リークの疑い。別のクラスどうし → 見分けにくい組</td></tr>
         <tr><td>(4)</td><td>点検表を書く。問題があれば評価用を撮り直して (1) から（今日のうちなら直してよい）</td></tr>
-        <tr><td>(5)</td><td>評価用を固定する（<code>results/c2_split.csv</code> に一覧と指紋を残す。一度固定すると、写真が変わったときは止まる）</td></tr>
+        <tr><td>(5)</td><td>評価用を決めて記録する（<code>results/c2_split.csv</code> に写真の一覧と指紋を残す。第9回からは、評価用の写真が1枚でも変わっていると止まる）</td></tr>
       </table>
-<pre>sim = f_tr @ f_ev.T   <span class="cmt"># TODO 1 の形（長さ 1 の特徴どうしの内積 ＝ コサイン類似度）</span></pre>
+<pre>sim = f_tr @ f_ev.T   <span class="cmt"># (2) で書く1行（長さ 1 の特徴どうしの内積 ＝ コサイン類似度）</span></pre>
+<svg viewBox="0 0 980 345" style="width:100%;height:auto;display:block;margin:0.6rem 0" role="img" aria-label="類似度の表の作り方" font-family="Noto Sans JP, Hiragino Sans, sans-serif">
+<defs><marker id="ah_sim" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#888"/></marker></defs>
+<rect x="10" y="30" width="120" height="150" rx="10" fill="#161616" stroke="#FFB800" stroke-width="2"/>
+<text x="70" y="60" text-anchor="middle" fill="#FFB800" font-size="14" font-weight="700">学習用</text>
+<text x="70" y="90" text-anchor="middle" fill="#bbb" font-size="12">120 枚</text>
+<text x="70" y="110" text-anchor="middle" fill="#bbb" font-size="12">↓ DINOv2</text>
+<text x="70" y="130" text-anchor="middle" fill="#bbb" font-size="12">f_tr</text>
+<text x="70" y="150" text-anchor="middle" fill="#bbb" font-size="12">（120 × 384）</text>
+<rect x="10" y="200" width="120" height="130" rx="10" fill="#161616" stroke="#4FC3F7" stroke-width="2"/>
+<text x="70" y="230" text-anchor="middle" fill="#4FC3F7" font-size="14" font-weight="700">評価用</text>
+<text x="70" y="258" text-anchor="middle" fill="#bbb" font-size="12">60 枚</text>
+<text x="70" y="278" text-anchor="middle" fill="#bbb" font-size="12">↓ DINOv2</text>
+<text x="70" y="298" text-anchor="middle" fill="#bbb" font-size="12">f_ev（60 × 384）</text>
+<text x="330" y="24" text-anchor="middle" fill="#eee" font-size="14" font-family="JetBrains Mono, monospace">sim = f_tr @ f_ev.T（120 × 60 の表）</text>
+<rect x="210" y="44" width="42" height="42" fill="rgba(79,195,247,0.155)" stroke="#333" stroke-width="1"/>
+<text x="231.0" y="70.0" text-anchor="middle" fill="#bbb" font-size="11">0.31</text>
+<rect x="254" y="44" width="42" height="42" fill="rgba(79,195,247,0.21)" stroke="#333" stroke-width="1"/>
+<text x="275.0" y="70.0" text-anchor="middle" fill="#bbb" font-size="11">0.42</text>
+<rect x="298" y="44" width="42" height="42" fill="rgba(79,195,247,0.14)" stroke="#333" stroke-width="1"/>
+<text x="319.0" y="70.0" text-anchor="middle" fill="#bbb" font-size="11">0.28</text>
+<rect x="342" y="44" width="42" height="42" fill="rgba(79,195,247,0.175)" stroke="#333" stroke-width="1"/>
+<text x="363.0" y="70.0" text-anchor="middle" fill="#bbb" font-size="11">0.35</text>
+<rect x="386" y="44" width="42" height="42" fill="rgba(79,195,247,0.11)" stroke="#333" stroke-width="1"/>
+<text x="407.0" y="70.0" text-anchor="middle" fill="#bbb" font-size="11">0.22</text>
+<rect x="430" y="44" width="42" height="42" fill="rgba(79,195,247,0.15)" stroke="#333" stroke-width="1"/>
+<text x="451.0" y="70.0" text-anchor="middle" fill="#bbb" font-size="11">0.30</text>
+<rect x="210" y="88" width="42" height="42" fill="rgba(79,195,247,0.135)" stroke="#333" stroke-width="1"/>
+<text x="231.0" y="114.0" text-anchor="middle" fill="#bbb" font-size="11">0.27</text>
+<rect x="254" y="88" width="42" height="42" fill="rgba(255,107,107,0.7)" stroke="#FF6B6B" stroke-width="2"/>
+<text x="275.0" y="114.0" text-anchor="middle" fill="#eee" font-size="11">0.95</text>
+<rect x="298" y="88" width="42" height="42" fill="rgba(79,195,247,0.165)" stroke="#333" stroke-width="1"/>
+<text x="319.0" y="114.0" text-anchor="middle" fill="#bbb" font-size="11">0.33</text>
+<rect x="342" y="88" width="42" height="42" fill="rgba(79,195,247,0.13)" stroke="#333" stroke-width="1"/>
+<text x="363.0" y="114.0" text-anchor="middle" fill="#bbb" font-size="11">0.26</text>
+<rect x="386" y="88" width="42" height="42" fill="rgba(79,195,247,0.2)" stroke="#333" stroke-width="1"/>
+<text x="407.0" y="114.0" text-anchor="middle" fill="#bbb" font-size="11">0.40</text>
+<rect x="430" y="88" width="42" height="42" fill="rgba(79,195,247,0.145)" stroke="#333" stroke-width="1"/>
+<text x="451.0" y="114.0" text-anchor="middle" fill="#bbb" font-size="11">0.29</text>
+<rect x="210" y="132" width="42" height="42" fill="rgba(79,195,247,0.19)" stroke="#333" stroke-width="1"/>
+<text x="231.0" y="158.0" text-anchor="middle" fill="#bbb" font-size="11">0.38</text>
+<rect x="254" y="132" width="42" height="42" fill="rgba(79,195,247,0.12)" stroke="#333" stroke-width="1"/>
+<text x="275.0" y="158.0" text-anchor="middle" fill="#bbb" font-size="11">0.24</text>
+<rect x="298" y="132" width="42" height="42" fill="rgba(79,195,247,0.15)" stroke="#333" stroke-width="1"/>
+<text x="319.0" y="158.0" text-anchor="middle" fill="#bbb" font-size="11">0.30</text>
+<rect x="342" y="132" width="42" height="42" fill="rgba(255,107,107,0.6160000000000001)" stroke="#FF6B6B" stroke-width="2"/>
+<text x="363.0" y="158.0" text-anchor="middle" fill="#eee" font-size="11">0.81</text>
+<rect x="386" y="132" width="42" height="42" fill="rgba(79,195,247,0.135)" stroke="#333" stroke-width="1"/>
+<text x="407.0" y="158.0" text-anchor="middle" fill="#bbb" font-size="11">0.27</text>
+<rect x="430" y="132" width="42" height="42" fill="rgba(79,195,247,0.165)" stroke="#333" stroke-width="1"/>
+<text x="451.0" y="158.0" text-anchor="middle" fill="#bbb" font-size="11">0.33</text>
+<rect x="210" y="176" width="42" height="42" fill="rgba(79,195,247,0.145)" stroke="#333" stroke-width="1"/>
+<text x="231.0" y="202.0" text-anchor="middle" fill="#bbb" font-size="11">0.29</text>
+<rect x="254" y="176" width="42" height="42" fill="rgba(79,195,247,0.18)" stroke="#333" stroke-width="1"/>
+<text x="275.0" y="202.0" text-anchor="middle" fill="#bbb" font-size="11">0.36</text>
+<rect x="298" y="176" width="42" height="42" fill="rgba(79,195,247,0.125)" stroke="#333" stroke-width="1"/>
+<text x="319.0" y="202.0" text-anchor="middle" fill="#bbb" font-size="11">0.25</text>
+<rect x="342" y="176" width="42" height="42" fill="rgba(79,195,247,0.155)" stroke="#333" stroke-width="1"/>
+<text x="363.0" y="202.0" text-anchor="middle" fill="#bbb" font-size="11">0.31</text>
+<rect x="386" y="176" width="42" height="42" fill="rgba(79,195,247,0.17)" stroke="#333" stroke-width="1"/>
+<text x="407.0" y="202.0" text-anchor="middle" fill="#bbb" font-size="11">0.34</text>
+<rect x="430" y="176" width="42" height="42" fill="rgba(79,195,247,0.13)" stroke="#333" stroke-width="1"/>
+<text x="451.0" y="202.0" text-anchor="middle" fill="#bbb" font-size="11">0.26</text>
+<rect x="210" y="220" width="42" height="42" fill="rgba(79,195,247,0.11)" stroke="#333" stroke-width="1"/>
+<text x="231.0" y="246.0" text-anchor="middle" fill="#bbb" font-size="11">0.22</text>
+<rect x="254" y="220" width="42" height="42" fill="rgba(79,195,247,0.15)" stroke="#333" stroke-width="1"/>
+<text x="275.0" y="246.0" text-anchor="middle" fill="#bbb" font-size="11">0.30</text>
+<rect x="298" y="220" width="42" height="42" fill="rgba(255,107,107,0.6040000000000001)" stroke="#FF6B6B" stroke-width="2"/>
+<text x="319.0" y="246.0" text-anchor="middle" fill="#eee" font-size="11">0.79</text>
+<rect x="342" y="220" width="42" height="42" fill="rgba(79,195,247,0.14)" stroke="#333" stroke-width="1"/>
+<text x="363.0" y="246.0" text-anchor="middle" fill="#bbb" font-size="11">0.28</text>
+<rect x="386" y="220" width="42" height="42" fill="rgba(79,195,247,0.125)" stroke="#333" stroke-width="1"/>
+<text x="407.0" y="246.0" text-anchor="middle" fill="#bbb" font-size="11">0.25</text>
+<rect x="430" y="220" width="42" height="42" fill="rgba(79,195,247,0.185)" stroke="#333" stroke-width="1"/>
+<text x="451.0" y="246.0" text-anchor="middle" fill="#bbb" font-size="11">0.37</text>
+<rect x="210" y="264" width="42" height="42" fill="rgba(79,195,247,0.165)" stroke="#333" stroke-width="1"/>
+<text x="231.0" y="290.0" text-anchor="middle" fill="#bbb" font-size="11">0.33</text>
+<rect x="254" y="264" width="42" height="42" fill="rgba(79,195,247,0.135)" stroke="#333" stroke-width="1"/>
+<text x="275.0" y="290.0" text-anchor="middle" fill="#bbb" font-size="11">0.27</text>
+<rect x="298" y="264" width="42" height="42" fill="rgba(79,195,247,0.155)" stroke="#333" stroke-width="1"/>
+<text x="319.0" y="290.0" text-anchor="middle" fill="#bbb" font-size="11">0.31</text>
+<rect x="342" y="264" width="42" height="42" fill="rgba(79,195,247,0.12)" stroke="#333" stroke-width="1"/>
+<text x="363.0" y="290.0" text-anchor="middle" fill="#bbb" font-size="11">0.24</text>
+<rect x="386" y="264" width="42" height="42" fill="rgba(79,195,247,0.15)" stroke="#333" stroke-width="1"/>
+<text x="407.0" y="290.0" text-anchor="middle" fill="#bbb" font-size="11">0.30</text>
+<rect x="430" y="264" width="42" height="42" fill="rgba(79,195,247,0.14)" stroke="#333" stroke-width="1"/>
+<text x="451.0" y="290.0" text-anchor="middle" fill="#bbb" font-size="11">0.28</text>
+<text x="340" y="330" text-anchor="middle" fill="#4FC3F7" font-size="12">← 評価用の写真（列）→</text>
+<text x="196" y="180" text-anchor="middle" fill="#FFB800" font-size="12" transform="rotate(-90 196 180)">← 学習用の写真（行）→</text>
+<line x1="484" y1="180" x2="560" y2="180" stroke="#888" stroke-width="2" marker-end="url(#ah_sim)"/>
+<rect x="566" y="60" width="400" height="240" rx="10" fill="#161616" stroke="#FF6B6B" stroke-width="2"/>
+<text x="766" y="92" text-anchor="middle" fill="#FF6B6B" font-size="15" font-weight="700">似ている順に上位 8 組を目で見る</text>
+<text x="586" y="128" text-anchor="start" fill="#bbb" font-size="13">・同じクラスどうし → リークの疑い</text>
+<text x="586" y="154" text-anchor="start" fill="#bbb" font-size="13">　（連写・同じ物・同じ背景なら撮り直す）</text>
+<text x="586" y="180" text-anchor="start" fill="#bbb" font-size="13">・別のクラスどうし → 見分けにくい組</text>
+<text x="586" y="206" text-anchor="start" fill="#bbb" font-size="13">　（スライド ② のネタになる）</text>
+<text x="586" y="232" text-anchor="start" fill="#bbb" font-size="13">・数値だけで決めない。0.80 は目安</text>
+<text x="586" y="258" text-anchor="start" fill="#bbb" font-size="13">・点検表を書いて評価用を記録する</text>
+</svg>
+
+      <figure style="margin:0.8rem 0"><img src="img/w8_pairs.png" alt="(3) の実行例（教員の確認用データ 犬3種）。上が学習用、下が評価用。自分の写真で作った同じ形の図が、スライド ② の材料になる" style="max-width:100%;border-radius:6px"><figcaption style="font-size:0.8rem;color:#999;margin-top:0.3rem">(3) の実行例（教員の確認用データ 犬3種）。上が学習用、下が評価用。自分の写真で作った同じ形の図が、スライド ② の材料になる</figcaption></figure>
       <p style="font-size:0.82rem;color:#999;margin-top:0.4rem">教員の検証：同じ写真を加工したものの多くは 0.85 以上だが、寄る・傾けると 0.74 まで下がる。別の写真の 99% は 0.69 以下。よく似た別の写真も 0.80 前後になる → 上位 8 組は類似度によらず目で見る。</p>
     </div>
   </div>
@@ -642,22 +1002,206 @@ a.sub-item:hover {
       <h2>演習2 学習せずに分類する ― ゼロショットで基準値を出す ― <code>ex2.ipynb</code>（35分）</h2>
     </div>
     <div class="card standard">
-      <div class="card-header"><h3>SigLIP2 のしくみ</h3></div>
+      <div class="card-header"><h3>写真を「文」で分類するしくみ（SigLIP2）</h3></div>
       <ul class="point-list" style="font-size:0.85rem">
-        <li>画像 約 100 億枚とその説明文（109 言語・英語が 9 割）で、「この写真にこの文は合っているか」を学習したモデル（Google DeepMind、2025 年）</li>
-        <li>クラスごとにラベル文を書くと、写真ごとに一番合う文のクラスを答える。<strong>自分の写真では学習しない</strong></li>
+        <li>SigLIP2 は、Google DeepMind が 2025 年に公開した学習済みのモデル。写真と説明文の組 約 100 億組（109 言語。うち約 9 割が英語）で学習してある。写真と文を渡すと、<strong>文が写真に合っている度合い</strong>を 0〜1 で答える</li>
+        <li>SigLIP2 を使うと、自分の写真で学習しなくても分類できる。クラスごとに文（<strong>ラベル文</strong>）を1つ書けばよい</li>
+      </ul>
+      <table style="font-size:0.85rem;margin-top:0.5rem">
+        <tr><th style="width:4rem">手順</th><th>やること</th><th style="width:40%">例（ペンの置き方 縦・横・斜め）</th></tr>
+        <tr><td>①</td><td>クラスごとにラベル文を書く。<strong>英語でも日本語でもよい</strong>（109 言語で学習済み。ただし英語が当たりやすい：教員の検証で英語 94.2%・日本語 75.8%）</td><td>「a photo of a pen placed vertically」「… horizontally」「… diagonally」</td></tr>
+        <tr><td>②</td><td>写真1枚と3つの文をモデルに渡し、文ごとの「合っている度合い」を出す</td><td>縦に置いたペンの写真 → 0.16・0.01・0.03</td></tr>
+        <tr><td>③</td><td>一番高い文のクラスを答えにする</td><td>0.16 の「縦」が答え（値は小さくてよい）</td></tr>
+        <tr><td>④</td><td>評価用の写真すべてで答え合わせをし、正解率を出す</td><td>60 枚中 54 枚正解 → 90%</td></tr>
+      </table>
+<svg viewBox="0 0 980 386" style="width:100%;height:auto;display:block;margin:0.6rem 0" role="img" aria-label="ゼロショットのしくみ" font-family="Noto Sans JP, Hiragino Sans, sans-serif">
+<defs><marker id="ah_zeroshot" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#888"/></marker></defs>
+<rect x="10" y="40" width="140" height="140" rx="10" fill="#3a3428" stroke="#FFB800" stroke-width="2"/>
+<g transform="translate(80,110) rotate(-90)"><rect x="-45.0" y="-3.5" width="82" height="7" rx="2" fill="#4FC3F7"/><path d="M37.0,-3.5 L45.0,0 L37.0,3.5 z" fill="#ddd"/><rect x="-45.0" y="-3.5" width="6" height="7" fill="#fff" opacity="0.5"/></g>
+<text x="80" y="202" text-anchor="middle" fill="#FFB800" font-size="13">自分の写真 1 枚</text>
+<line x1="154" y1="110" x2="210" y2="110" stroke="#888" stroke-width="2" marker-end="url(#ah_zeroshot)"/>
+<rect x="214" y="75" width="130" height="70" rx="10" fill="#161616" stroke="#888" stroke-width="2"/>
+<text x="279" y="105" text-anchor="middle" fill="#eee" font-size="13" font-weight="700">画像の部分</text>
+<text x="279" y="127" text-anchor="middle" fill="#bbb" font-size="12">→ 数値の並び</text>
+<rect x="10" y="242" width="330" height="28" rx="6" fill="#0a1a2e" stroke="#4FC3F7" stroke-width="1.5"/>
+<text x="20" y="262" text-anchor="start" fill="#81D4FA" font-size="12" font-family="JetBrains Mono, monospace">"a photo of a pen placed vertically"</text>
+<rect x="10" y="276" width="330" height="28" rx="6" fill="#0a1a2e" stroke="#4FC3F7" stroke-width="1.5"/>
+<text x="20" y="296" text-anchor="start" fill="#81D4FA" font-size="12" font-family="JetBrains Mono, monospace">"a photo of a pen placed horizontally"</text>
+<rect x="10" y="310" width="330" height="28" rx="6" fill="#0a1a2e" stroke="#4FC3F7" stroke-width="1.5"/>
+<text x="20" y="330" text-anchor="start" fill="#81D4FA" font-size="12" font-family="JetBrains Mono, monospace">"a photo of a pen placed diagonally"</text>
+<text x="175" y="226" text-anchor="middle" fill="#4FC3F7" font-size="12">ラベル文（クラスごとに 1 つ・自分で書く）</text>
+<line x1="344" y1="296" x2="396" y2="296" stroke="#888" stroke-width="2" marker-end="url(#ah_zeroshot)"/>
+<rect x="400" y="262" width="130" height="70" rx="10" fill="#161616" stroke="#888" stroke-width="2"/>
+<text x="465" y="292" text-anchor="middle" fill="#eee" font-size="13" font-weight="700">文の部分</text>
+<text x="465" y="314" text-anchor="middle" fill="#bbb" font-size="12">→ 数値の並び</text>
+<line x1="348" y1="110" x2="560" y2="190" stroke="#888" stroke-width="2" marker-end="url(#ah_zeroshot)"/>
+<line x1="534" y1="296" x2="560" y2="230" stroke="#888" stroke-width="2" marker-end="url(#ah_zeroshot)"/>
+<rect x="566" y="160" width="150" height="100" rx="10" fill="#161616" stroke="#B388FF" stroke-width="2"/>
+<text x="641" y="196" text-anchor="middle" fill="#B388FF" font-size="14" font-weight="700">比べる</text>
+<text x="641" y="222" text-anchor="middle" fill="#bbb" font-size="12">写真と文が</text>
+<text x="641" y="240" text-anchor="middle" fill="#bbb" font-size="12">合っている度合い</text>
+<line x1="720" y1="210" x2="756" y2="210" stroke="#888" stroke-width="2" marker-end="url(#ah_zeroshot)"/>
+<text x="800" y="176" text-anchor="end" fill="#eee" font-size="13">縦</text>
+<rect x="808" y="162" width="112" height="20" fill="#4FC3F7"/>
+<text x="924.0" y="177" text-anchor="start" fill="#eee" font-size="12">0.16</text>
+<text x="800" y="212" text-anchor="end" fill="#eee" font-size="13">横</text>
+<rect x="808" y="198" width="7" height="20" fill="#666"/>
+<text x="819.0" y="213" text-anchor="start" fill="#eee" font-size="12">0.01</text>
+<text x="800" y="248" text-anchor="end" fill="#eee" font-size="13">斜め</text>
+<rect x="808" y="234" width="21" height="20" fill="#666"/>
+<text x="833.0" y="249" text-anchor="start" fill="#eee" font-size="12">0.03</text>
+<text x="880" y="290" text-anchor="middle" fill="#81D4FA" font-size="14" font-weight="700">一番高い「縦」が答え</text>
+<text x="490" y="372" text-anchor="middle" fill="#bbb" font-size="12">写真は答えを出すために渡すだけで、モデルは覚えない（学習しない）。値は文ごとに 0〜1（合計は 1 にならない・小さくてよい）。数値は例</text>
+</svg>
+
+      <figure style="margin:0.8rem 0"><img src="img/w8_zs.png" alt="実行例（教員の確認用データ 犬3種）。評価用の写真ごとに3つのラベル文の値を出し、一番高い文のクラスを答えにする" style="max-width:100%;border-radius:6px"><figcaption style="font-size:0.8rem;color:#999;margin-top:0.3rem">実行例（教員の確認用データ 犬3種）。評価用の写真ごとに3つのラベル文の値を出し、一番高い文のクラスを答えにする</figcaption></figure>
+      <ul class="point-list" style="font-size:0.85rem;margin-top:0.5rem">
+        <li>自分の写真は答えを出すために渡すだけで、<strong>モデルには覚えさせない</strong>（学習しない）。見本を0枚しか見せないので「<strong>ゼロショット</strong>」と呼ぶ</li>
+        <li>文で言い表しにくい違い（お気に入りの配置・取っ手の向きなど）は当たりにくい → 第9回から自分の写真で学習する</li>
         <li>書き方で正解率が変わる → 英語・日本語・説明文の3通りを<strong>学習用</strong>で比べて1つ選ぶ。<strong>評価用</strong>は選んだ1つで1回だけ測る（評価用を見て選ばない）</li>
         <li>英語は小文字で書く（小文字で学習したモデル。"Beagle" のように大文字を入れると正解率が 33% まで落ちた。ノートブックは自動で小文字にする）</li>
       </ul>
     </div>
     <div class="card standard">
-      <div class="card-header"><h3>差の判定（Ⅱからの決まり）</h3></div>
-      <ul class="point-list" style="font-size:0.85rem">
-        <li>差 ÷ 標準偏差 の標準偏差に、<strong>写真の選び方のぶれ（ブートストラップ）</strong>を入れる。今日は学習しないので、写真のぶれだけ</li>
-        <li>理由：評価用 30 枚（1クラス 10 枚）では、写真を入れ替えるだけで正解率が 10 ポイント動いた（教員の検証）。シードのぶれ（約 3）だけでは小さく出すぎる</li>
-        <li>目安は第4回と同じ：2 以上で「差がある」、1 未満で「差があるとは言えない」。「差があるとは言えない」は「差がない」ではない</li>
+      <div class="card-header"><h3>差の判定 ― ラベル文の差は本物か（ノートブックの (4)・(5)）</h3></div>
+      <p style="font-size:0.85rem">確かめたいこと：英語の文が日本語の文より正解率が高かったとき、<strong>たまたま選んだ写真のせいではないか</strong>。評価用 30 枚（1クラス 10 枚）では、写真を入れ替えるだけで正解率が 10 ポイント動いた（教員の検証）。</p>
+      <table style="font-size:0.85rem;margin-top:0.4rem">
+        <tr><th style="width:3.6rem">手順</th><th>やること</th><th style="width:36%">例（犬3種・学習用 120 枚）</th></tr>
+        <tr><td>①</td><td>3通りのラベル文で、学習用の写真1枚ずつの当たり・外れを出す（演習2 の (3) で自分で1行書く）</td><td>120 枚 × 3通りの ○×</td></tr>
+        <tr><td>②</td><td>一番高い文と、ほかの文の正解率の差を出す</td><td>英語 94.2% − 日本語 75.8% ＝ 18.3 ポイント</td></tr>
+        <tr><td>③</td><td>学習用 120 枚から、戻しながら 120 枚を選び直す（同じ写真が2回出てもよい）。選び直した写真で、英語と日本語の正解率の差をもう一度計算する。2000 回繰り返す（<strong>ブートストラップ</strong>）</td><td>差が 2000 個できる</td></tr>
+        <tr><td>④</td><td>2000 個の差のばらつき（標準偏差 SD）を出す</td><td>SD 3.6</td></tr>
+        <tr><td>⑤</td><td>差 ÷ SD で判定する。2 以上は「差がある」、1 未満は「差があるとは言えない」、1〜2 は「どちらとも言えない」（目安は第4回と同じ）</td><td>18.3 ÷ 3.6 ＝ 5.1 → 差がある → 英語を選ぶ</td></tr>
+        <tr><td>⑥</td><td>(5) 評価用でも同じ判定をする：選んだ文の、学習用と評価用の正解率の差</td><td>評価用 93.3% − 学習用 94.2% ＝ −0.8、SD 3.8 → 0.2 → 差があるとは言えない</td></tr>
+      </table>
+      <ul class="point-list" style="font-size:0.85rem;margin-top:0.5rem">
+        <li>③〜⑥はノートブックが計算して表に出す（自分で書くコードはない）。<strong>自分でやるのは、表の「差」「SD」「差÷SD」「判定」を読み、考察に数値で書くこと</strong></li>
+        <li>第4回では SD にシード（学習のやり直し）のぶれを使った。今日は学習しないのでシードはなく、写真の選び方のぶれだけを使う。第9回からは両方を入れる</li>
+        <li>「差があるとは言えない」は「差がない」ではない（写真が少ないと、本当の差も見つけにくい）</li>
       </ul>
+<svg viewBox="0 0 980 410" style="width:100%;height:auto;display:block;margin:0.6rem 0" role="img" aria-label="ブートストラップで差のぶれを測る" font-family="Noto Sans JP, Hiragino Sans, sans-serif">
+<defs><marker id="ah_boot" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#888"/></marker></defs>
+<text x="20" y="26" text-anchor="start" fill="#eee" font-size="14" font-weight="700">① 同じ 10 枚の写真で、2 つのラベル文の当たり・外れ（例）</text>
+<rect x="90" y="38" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="107" y="60" text-anchor="middle" fill="#bbb" font-size="12">1</text>
+<text x="107" y="92" text-anchor="middle" fill="#81C784" font-size="15" font-weight="700">○</text>
+<text x="107" y="118" text-anchor="middle" fill="#81C784" font-size="15" font-weight="700">○</text>
+<rect x="130" y="38" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="147" y="60" text-anchor="middle" fill="#bbb" font-size="12">2</text>
+<text x="147" y="92" text-anchor="middle" fill="#81C784" font-size="15" font-weight="700">○</text>
+<text x="147" y="118" text-anchor="middle" fill="#FF6B6B" font-size="15" font-weight="700">×</text>
+<rect x="170" y="38" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="187" y="60" text-anchor="middle" fill="#bbb" font-size="12">3</text>
+<text x="187" y="92" text-anchor="middle" fill="#81C784" font-size="15" font-weight="700">○</text>
+<text x="187" y="118" text-anchor="middle" fill="#81C784" font-size="15" font-weight="700">○</text>
+<rect x="210" y="38" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="227" y="60" text-anchor="middle" fill="#bbb" font-size="12">4</text>
+<text x="227" y="92" text-anchor="middle" fill="#81C784" font-size="15" font-weight="700">○</text>
+<text x="227" y="118" text-anchor="middle" fill="#FF6B6B" font-size="15" font-weight="700">×</text>
+<rect x="250" y="38" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="267" y="60" text-anchor="middle" fill="#bbb" font-size="12">5</text>
+<text x="267" y="92" text-anchor="middle" fill="#81C784" font-size="15" font-weight="700">○</text>
+<text x="267" y="118" text-anchor="middle" fill="#81C784" font-size="15" font-weight="700">○</text>
+<rect x="290" y="38" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="307" y="60" text-anchor="middle" fill="#bbb" font-size="12">6</text>
+<text x="307" y="92" text-anchor="middle" fill="#FF6B6B" font-size="15" font-weight="700">×</text>
+<text x="307" y="118" text-anchor="middle" fill="#FF6B6B" font-size="15" font-weight="700">×</text>
+<rect x="330" y="38" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="347" y="60" text-anchor="middle" fill="#bbb" font-size="12">7</text>
+<text x="347" y="92" text-anchor="middle" fill="#81C784" font-size="15" font-weight="700">○</text>
+<text x="347" y="118" text-anchor="middle" fill="#81C784" font-size="15" font-weight="700">○</text>
+<rect x="370" y="38" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="387" y="60" text-anchor="middle" fill="#bbb" font-size="12">8</text>
+<text x="387" y="92" text-anchor="middle" fill="#81C784" font-size="15" font-weight="700">○</text>
+<text x="387" y="118" text-anchor="middle" fill="#81C784" font-size="15" font-weight="700">○</text>
+<rect x="410" y="38" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="427" y="60" text-anchor="middle" fill="#bbb" font-size="12">9</text>
+<text x="427" y="92" text-anchor="middle" fill="#81C784" font-size="15" font-weight="700">○</text>
+<text x="427" y="118" text-anchor="middle" fill="#FF6B6B" font-size="15" font-weight="700">×</text>
+<rect x="450" y="38" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="467" y="60" text-anchor="middle" fill="#bbb" font-size="12">10</text>
+<text x="467" y="92" text-anchor="middle" fill="#81C784" font-size="15" font-weight="700">○</text>
+<text x="467" y="118" text-anchor="middle" fill="#81C784" font-size="15" font-weight="700">○</text>
+<text x="80" y="92" text-anchor="end" fill="#81D4FA" font-size="13">英語</text>
+<text x="80" y="118" text-anchor="end" fill="#FFB800" font-size="13">日本語</text>
+<text x="500" y="92" text-anchor="start" fill="#81D4FA" font-size="14" font-weight="700">90%</text>
+<text x="500" y="118" text-anchor="start" fill="#FFB800" font-size="14" font-weight="700">60%</text>
+<text x="560" y="105" text-anchor="start" fill="#eee" font-size="15" font-weight="700">② 差 30 ポイント</text>
+<text x="20" y="160" text-anchor="start" fill="#FFB800" font-size="13">③ 戻しながら 10 枚を選び直し（同じ写真が 2 回出てもよい）、選んだ写真で差を計算し直す × 2000 回</text>
+<rect x="90" y="176" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="107" y="198" text-anchor="middle" fill="#bbb" font-size="12">1</text>
+<rect x="130" y="176" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="147" y="198" text-anchor="middle" fill="#bbb" font-size="12">1</text>
+<rect x="170" y="176" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="187" y="198" text-anchor="middle" fill="#bbb" font-size="12">3</text>
+<rect x="210" y="176" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="227" y="198" text-anchor="middle" fill="#bbb" font-size="12">4</text>
+<rect x="250" y="176" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="267" y="198" text-anchor="middle" fill="#bbb" font-size="12">6</text>
+<rect x="290" y="176" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="307" y="198" text-anchor="middle" fill="#bbb" font-size="12">6</text>
+<rect x="330" y="176" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="347" y="198" text-anchor="middle" fill="#bbb" font-size="12">7</text>
+<rect x="370" y="176" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="387" y="198" text-anchor="middle" fill="#bbb" font-size="12">8</text>
+<rect x="410" y="176" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="427" y="198" text-anchor="middle" fill="#bbb" font-size="12">9</text>
+<rect x="450" y="176" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="467" y="198" text-anchor="middle" fill="#bbb" font-size="12">10</text>
+<text x="80" y="198" text-anchor="end" fill="#bbb" font-size="12">1 回目</text>
+<text x="500" y="198" text-anchor="start" fill="#eee" font-size="13">英語 80%・日本語 60% → 差 20</text>
+<rect x="90" y="220" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="107" y="242" text-anchor="middle" fill="#bbb" font-size="12">2</text>
+<rect x="130" y="220" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="147" y="242" text-anchor="middle" fill="#bbb" font-size="12">2</text>
+<rect x="170" y="220" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="187" y="242" text-anchor="middle" fill="#bbb" font-size="12">4</text>
+<rect x="210" y="220" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="227" y="242" text-anchor="middle" fill="#bbb" font-size="12">5</text>
+<rect x="250" y="220" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="267" y="242" text-anchor="middle" fill="#bbb" font-size="12">5</text>
+<rect x="290" y="220" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="307" y="242" text-anchor="middle" fill="#bbb" font-size="12">6</text>
+<rect x="330" y="220" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="347" y="242" text-anchor="middle" fill="#bbb" font-size="12">8</text>
+<rect x="370" y="220" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="387" y="242" text-anchor="middle" fill="#bbb" font-size="12">9</text>
+<rect x="410" y="220" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="427" y="242" text-anchor="middle" fill="#bbb" font-size="12">9</text>
+<rect x="450" y="220" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="467" y="242" text-anchor="middle" fill="#bbb" font-size="12">10</text>
+<text x="80" y="242" text-anchor="end" fill="#bbb" font-size="12">2 回目</text>
+<text x="500" y="242" text-anchor="start" fill="#eee" font-size="13">英語 90%・日本語 40% → 差 50</text>
+<rect x="90" y="264" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="107" y="286" text-anchor="middle" fill="#bbb" font-size="12">1</text>
+<rect x="130" y="264" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="147" y="286" text-anchor="middle" fill="#bbb" font-size="12">3</text>
+<rect x="170" y="264" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="187" y="286" text-anchor="middle" fill="#bbb" font-size="12">3</text>
+<rect x="210" y="264" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="227" y="286" text-anchor="middle" fill="#bbb" font-size="12">4</text>
+<rect x="250" y="264" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="267" y="286" text-anchor="middle" fill="#bbb" font-size="12">5</text>
+<rect x="290" y="264" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="307" y="286" text-anchor="middle" fill="#bbb" font-size="12">7</text>
+<rect x="330" y="264" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="347" y="286" text-anchor="middle" fill="#bbb" font-size="12">8</text>
+<rect x="370" y="264" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="387" y="286" text-anchor="middle" fill="#bbb" font-size="12">9</text>
+<rect x="410" y="264" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="427" y="286" text-anchor="middle" fill="#bbb" font-size="12">10</text>
+<rect x="450" y="264" width="34" height="34" rx="4" fill="#1c2633" stroke="#444"/>
+<text x="467" y="286" text-anchor="middle" fill="#bbb" font-size="12">10</text>
+<text x="80" y="286" text-anchor="end" fill="#bbb" font-size="12">3 回目</text>
+<text x="500" y="286" text-anchor="start" fill="#eee" font-size="13">英語 100%・日本語 80% → 差 20</text>
+<text x="90" y="324" text-anchor="start" fill="#bbb" font-size="12">… 2000 回 → 差が 2000 個できる</text>
+<rect x="20" y="342" width="940" height="58" rx="10" fill="#0a1a2e" stroke="#4FC3F7" stroke-width="2"/>
+<text x="490" y="368" text-anchor="middle" fill="#81D4FA" font-size="13" font-weight="700">④ 2000 個の差のばらつき ＝ 標準偏差（SD）　⑤ 差 ÷ SD が 2 以上 → 差がある・1 未満 → 差があるとは言えない</text>
+<text x="490" y="390" text-anchor="middle" fill="#bbb" font-size="12">選び直しても差が安定していれば SD は小さく、差 ÷ SD は大きくなる（数値は例）</text>
+</svg>
+
       <p style="font-size:0.82rem;color:#999;margin-top:0.4rem">教員の検証（犬3種）：学習用で 英語 94.2%・日本語 75.8%・説明文 80.0% → 英語を選び、評価用で 93.3%（基準値）。見分けにくいケーブル画像（ピンの抜け）は3通りとも 50%（全部を同じクラスと答えた）。</p>
+      <p style="font-size:0.82rem;color:#999;margin-top:0.3rem">教員の検証（ブレッドボードの向き 横・斜め・縦）：学習用で 英語 40.0%・日本語 33.3%・説明文 33.3%、評価用 43.3%（ほぼ全部を「横」と答えた）。向きのクラスでは、ゼロショットはあてずっぽう（33%）に近いのがふつうで、あてずっぽうに近い正解率が基準値になる。同じ写真で DINOv2 の特徴に最後の層だけを学習すると、評価用 90.0% まで上がった（第9回の内容）。</p>
     </div>
   </div>
 </section>
@@ -667,19 +1211,58 @@ a.sub-item:hover {
   <div class="container">
     <div class="section-header">
       <div class="section-num" style="background:#FFB800">ス</div>
-      <h2>スライド3枚 ― 問い・結果・判断（20分）</h2>
+      <h2>スライド ― 問い・結果・判断の3枚（20分）＋ 質疑応答の1枚（発表後10分）</h2>
     </div>
     <div class="card standard">
+<svg viewBox="0 0 980 226" style="width:100%;height:auto;display:block;margin:0.6rem 0" role="img" aria-label="スライド4枚" font-family="Noto Sans JP, Hiragino Sans, sans-serif">
+<defs><marker id="ah_slides" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#888"/></marker></defs>
+<rect x="10" y="10" width="230" height="180" rx="6" fill="#f5f5f5" stroke="#FFB800" stroke-width="2"/>
+<rect x="10" y="10" width="230" height="38" rx="6" fill="#FFB800"/>
+<text x="26" y="36" text-anchor="start" fill="#111" font-size="16" font-weight="700">① 問い</text>
+<text x="24" y="80" text-anchor="start" fill="#333" font-size="12">・見分けたい3クラス</text>
+<text x="24" y="110" text-anchor="start" fill="#333" font-size="12">・写真の例</text>
+<text x="24" y="140" text-anchor="start" fill="#333" font-size="12">・何を確かめたいか</text>
+<rect x="252" y="10" width="230" height="180" rx="6" fill="#f5f5f5" stroke="#4FC3F7" stroke-width="2"/>
+<rect x="252" y="10" width="230" height="38" rx="6" fill="#4FC3F7"/>
+<text x="268" y="36" text-anchor="start" fill="#111" font-size="16" font-weight="700">② 結果</text>
+<text x="266" y="80" text-anchor="start" fill="#333" font-size="12">・似ている組と点検の結論</text>
+<text x="266" y="110" text-anchor="start" fill="#333" font-size="12">・ラベル文3通りの正解率</text>
+<text x="266" y="140" text-anchor="start" fill="#333" font-size="12">・差 ÷ SD と判定</text>
+<rect x="494" y="10" width="230" height="180" rx="6" fill="#f5f5f5" stroke="#B388FF" stroke-width="2"/>
+<rect x="494" y="10" width="230" height="38" rx="6" fill="#B388FF"/>
+<text x="510" y="36" text-anchor="start" fill="#111" font-size="16" font-weight="700">③ 判断</text>
+<text x="508" y="80" text-anchor="start" fill="#333" font-size="12">・選んだラベル文と基準値</text>
+<text x="508" y="110" text-anchor="start" fill="#333" font-size="12">・一番困る間違い</text>
+<text x="508" y="140" text-anchor="start" fill="#333" font-size="12">・第9回で試したいこと</text>
+<rect x="736" y="10" width="230" height="180" rx="6" fill="#f5f5f5" stroke="#FF6B6B" stroke-width="2"/>
+<rect x="736" y="10" width="230" height="38" rx="6" fill="#FF6B6B"/>
+<text x="752" y="36" text-anchor="start" fill="#111" font-size="16" font-weight="700">④ 質疑応答（発表後）</text>
+<text x="750" y="80" text-anchor="start" fill="#333" font-size="12">・もらった質問と 質疑での答え</text>
+<text x="750" y="110" text-anchor="start" fill="#333" font-size="12">・1つを自分の数値で答え直す</text>
+<text x="750" y="140" text-anchor="start" fill="#333" font-size="12">・質問を受けて変えること</text>
+<text x="490" y="214" text-anchor="middle" fill="#bbb" font-size="12.5">数値はノートブックの表と同じもの。毎回4枚を同じ Google スライドに足していき、第14回の最終発表に使う</text>
+</svg>
+
+      <div class="card-header"><h3>準備（最初の1回だけ）</h3></div>
       <table style="font-size:0.85rem">
-        <tr><th style="width:3rem">枚</th><th style="width:7rem">テーマ</th><th>入れるもの（今日の分）</th></tr>
-        <tr><td>①</td><td>問い</td><td>用途（誰が・どこで使うか）と3クラス。写真の例（<code>results/c2_d8_fig_photos.png</code>）</td></tr>
-        <tr><td>②</td><td>結果</td><td>似ている組と点検の結論（<code>c2_d8_fig_pairs.png</code>）。ラベル文3通りの学習用の正解率と判定（<code>c2_d8_tables.txt</code>）</td></tr>
-        <tr><td>③</td><td>判断</td><td>選んだラベル文と基準値（評価用）・目標の正解率・一番困る間違い・第9回で試したいこと。根拠の数値を必ず書く</td></tr>
+        <tr><th style="width:3.6rem">手順</th><th>やること</th></tr>
+        <tr><td>1</td><td>ブラウザで Google スライドを開き、新しいプレゼンテーションを作る。ファイル名は「AI_TD2_学籍番号_氏名」。第14回まで同じファイルに足していく</td></tr>
+        <tr><td>2</td><td>Finder で <code>~/AI_TD/results</code> を開いておく（図と表はノートブックがここに保存する）</td></tr>
+      </table>
+      <div class="card-header" style="margin-top:1rem"><h3>4枚の作り方</h3></div>
+      <table style="font-size:0.85rem">
+        <tr><th style="width:6.5rem">スライド</th><th style="width:34%">貼るもの（どこで作られるか）</th><th>書くこと（例：ペンの置き方 縦・横・斜め）</th></tr>
+        <tr><td><strong>① 問い</strong></td><td><code>c2_d8_fig_photos.png</code>（演習1 の (1) で保存。クラスごとの写真の例）</td><td>・タイトル：「ペンの置き方（縦・横・斜め）を、文だけで見分けられるか」<br>・3クラスの名前と、何で見分けるか<br>・学習用と評価用の枚数（演習1 の (1) の表）と、それぞれを撮った場所</td></tr>
+        <tr><td><strong>② 結果</strong></td><td><code>c2_d8_fig_pairs.png</code>（演習1 の (3)。似ている8組）<br><code>c2_d8_tables.txt</code> の表（演習2 の (8) で保存。ラベル文ごとの正解率と判定）</td><td>・点検の結論（演習1 の (4) の点検表。例「同じクラスの似た組はあったが、机が違うのでリークではない」）<br>・ラベル文3通りの学習用の正解率と、差 ÷ SD・判定（例「英語 94.2%・日本語 75.8%、差 ÷ SD 5.1 で差がある」）</td></tr>
+        <tr><td><strong>③ 判断</strong></td><td>（あれば）<code>c2_d8_fig_wrong.png</code>（演習2 の (6)。評価用で外れた写真）</td><td>演習2 の (8) の「判断」に書いた内容を、箇条書きにする<br>・選んだラベル文と<strong>基準値</strong>（評価用の正解率）<br>・目標の正解率・一番困る間違い（どのクラスをどれと間違えると困るか）<br>・第9回で試したいこと</td></tr>
+        <tr><td><strong>④ 質疑応答</strong><br><span style="color:#999;font-size:0.78rem">発表の後に作る</span></td><td>なし（文だけ）</td><td>(a) もらった質問をすべて：質問者・質問・質疑での答え（答えられなかったなら「答えられなかった」）<br>(b) 1つを選び、<strong>自分の表の数値</strong>で答え直す（質疑で答えられなかった・答えが不十分だった質問を選ぶ）<br>(c) 質問を受けて、スライドの何を直すか・第9回で何を確かめるか</td></tr>
       </table>
       <ul class="point-list" style="font-size:0.85rem;margin-top:0.5rem">
-        <li>Google スライドで作る。毎回 3 枚を同じファイルに足していき、第14回の最終発表に使う</li>
-        <li>数値は自分の CSV・表と同じであること（採点で照らし合わせる）。人の顔は載せない</li>
-        <li>「ファイル → ダウンロード → PDF」で、その回の 3 枚を <code>c2_d8_slides.pdf</code> として出す</li>
+        <li><strong>図の貼り方</strong>：Finder の <code>results</code> から PNG を Google スライドへドラッグする</li>
+        <li><strong>表の貼り方</strong>：<code>c2_d8_tables.txt</code> をダブルクリックで開き、必要な行をコピーしてテキストボックスに貼る。フォントを「Roboto Mono」にすると列がそろう</li>
+        <li><strong>数値</strong>：ノートブックの表に出た値を、表のとおりに書く（採点でノートブックと照らし合わせる）。1枚に文を詰め込まず、数値と短い文で書く。人の顔は載せない</li>
+        <li><strong>発表</strong>は①〜③の3枚で3分。④は発表の後に作る</li>
+        <li><strong>提出</strong>：④まで作ったら「ファイル → ダウンロード → PDF ドキュメント」。保存された PDF の名前を <code>c2_d8_slides.pdf</code> に変えて提出する（第8回は4枚だけ）。第9回からは、書きためた全部を PDF にして出す（新しい4枚は最後に足す）</li>
       </ul>
     </div>
   </div>
@@ -693,13 +1276,38 @@ a.sub-item:hover {
       <h2>グループ内プレゼン ― バーチャル空間（30分）</h2>
     </div>
     <div class="card standard">
+<svg viewBox="0 0 980 292" style="width:100%;height:auto;display:block;margin:0.6rem 0" role="img" aria-label="グループ内プレゼン" font-family="Noto Sans JP, Hiragino Sans, sans-serif">
+<defs><marker id="ah_present" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#888"/></marker></defs>
+<rect x="10" y="10" width="420" height="270" rx="10" fill="#161616" stroke="#B388FF" stroke-width="2"/>
+<text x="220" y="38" text-anchor="middle" fill="#B388FF" font-size="14" font-weight="700">グループの机（バーチャル空間）</text>
+<circle cx="220" cy="160" r="42" fill="#222" stroke="#555"/>
+<circle cx="220" cy="80" r="16" fill="#FFB800"/>
+<text x="244" y="85" text-anchor="start" fill="#FFB800" font-size="12">発表者</text>
+<circle cx="100" cy="160" r="16" fill="#81D4FA"/>
+<text x="100" y="194" text-anchor="middle" fill="#81D4FA" font-size="12">聞き手</text>
+<circle cx="340" cy="160" r="16" fill="#81D4FA"/>
+<text x="340" y="194" text-anchor="middle" fill="#81D4FA" font-size="12">聞き手</text>
+<circle cx="220" cy="240" r="16" fill="#81D4FA"/>
+<text x="244" y="245" text-anchor="start" fill="#81D4FA" font-size="12">聞き手</text>
+<text x="220" y="165" text-anchor="middle" fill="#bbb" font-size="12">画面共有</text>
+<text x="460" y="40" text-anchor="start" fill="#eee" font-size="14" font-weight="700">1 人あたり 5 分（順番に全員）</text>
+<rect x="460" y="56" width="300" height="40" fill="#FFB800"/>
+<text x="610" y="82" text-anchor="middle" fill="#111" font-size="13" font-weight="700">発表 3 分（スライド3枚）</text>
+<rect x="760" y="56" width="200" height="40" fill="#81D4FA"/>
+<text x="860" y="82" text-anchor="middle" fill="#111" font-size="13" font-weight="700">質疑 2 分</text>
+<rect x="460" y="116" width="500" height="114" rx="10" fill="#0a1a2e" stroke="#81D4FA" stroke-width="2"/>
+<text x="480" y="144" text-anchor="start" fill="#81D4FA" font-size="13" font-weight="700">質疑のしかた</text>
+<text x="480" y="172" text-anchor="start" fill="#bbb" font-size="12.5">・聞き手：相手の数値を問う質問を 1 つずつ（例：「93.3% の評価用は何枚？」）</text>
+<text x="480" y="198" text-anchor="start" fill="#bbb" font-size="12.5">・発表者：自分の数値で答え、もらった質問をスライド ④ にメモする</text>
+</svg>
+
       <table style="font-size:0.85rem">
         <tr><th style="width:8rem">順</th><th>やること</th></tr>
         <tr><td>集まる</td><td>バーチャル空間の自分のグループの机へ。MEMBER_NO の順に発表する</td></tr>
         <tr><td>発表（3分）</td><td>画面共有でスライド3枚。問い → 結果 → 判断の順に</td></tr>
         <tr><td>質疑（2分）</td><td>聞き手は<strong>相手の数値を問う質問</strong>を1つずつ。答えは自分の数値で</td></tr>
-        <tr><td>記入</td><td>聞き手は <code>peer.ipynb</code> に、質問と3つの観点（数値の根拠・判断の理由・分かりやすさ）を ○△× で書く</td></tr>
-        <tr><td>最後（10分）</td><td>もらった質問の1つに、自分の数値で答えを書く（<code>peer.ipynb</code> の <code>MY_A</code>）</td></tr>
+                <tr><td>発表のすぐ後</td><td>もらった質問を、忘れないうちにスライド④にメモする（質問者・質問・質疑での答え）</td></tr>
+        <tr><td>最後（10分）</td><td>スライド④を仕上げる：1つを自分の表の数値で答え直し、変えることを書く</td></tr>
       </table>
     </div>
   </div>
@@ -715,12 +1323,10 @@ a.sub-item:hover {
     <div class="card standard">
       <table style="font-size:0.85rem">
         <tr><th style="width:12rem">ファイル</th><th>中身</th></tr>
-        <tr><td><code>c2_d8_slides.pdf</code></td><td>スライド3枚（問い・結果・判断）</td></tr>
-        <tr><td><code>peer.ipynb</code>・<code>c2_d8_peer.csv</code></td><td>聞き手シート（質問と評価）・もらった質問への答え</td></tr>
-        <tr><td><code>ex1.ipynb</code>・<code>ex2.ipynb</code></td><td>実行した結果が残ったもの。予測・点検表・振り返り・考察を書いたもの</td></tr>
-        <tr><td><code>c2_d8_ex1.csv</code>・<code>c2_d8_ex2.csv</code>・<code>c2_split.csv</code></td><td>スライドの数値の裏付け（照らし合わせる）</td></tr>
-      </table>
-      <p style="font-size:0.82rem;color:#999;margin-top:0.4rem">成績はスライドと発表が中心（スライド・聞き手の評価・質問への答え）。ノートブックと CSV はスライドの数値の裏付けとして照らし合わせる。</p>
+        <tr><td><code>c2_d8_slides.pdf</code></td><td>スライド4枚（問い・結果・判断・質疑応答）</td></tr>
+                <tr><td><code>ex1.ipynb</code>・<code>ex2.ipynb</code></td><td>実行した結果が残ったもの。予測・点検表・振り返り・考察を書いたもの</td></tr>
+              </table>
+      <p style="font-size:0.82rem;color:#999;margin-top:0.4rem">成績はスライドが中心（①〜③の発表内容と④の質疑応答）。ノートブックはスライドの数値の裏付けとして照らし合わせる。</p>
     </div>
   </div>
 </section>
